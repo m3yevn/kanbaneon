@@ -83,6 +83,7 @@ export default {
     async loginApi(e) {
       e.preventDefault();
       this.isLoading = true;
+      this.error = { username: '', password: '' };
       try {
         const user = await login(this.username, this.password);
         if (!!user?.success) {
@@ -93,8 +94,13 @@ export default {
           });
           localStorage.setItem("token", user.token);
           this.$router.push("/");
+        } else if (user && user.message) {
+          this.error.password = user.message;
+        } else {
+          this.error.password = "Login failed. Please try again.";
         }
       } catch (ex) {
+        this.error.password = "An unexpected error occurred. Please try again.";
         console.error(ex);
       }
       finally {

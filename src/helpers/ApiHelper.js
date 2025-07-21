@@ -443,20 +443,30 @@ const del = async (endpoint) => {
 };
 
 const post = async (endpoint, body, token) => {
-  const response = await fetch(apiUrl + endpoint, {
-    method: "POST",
-    headers: token
-      ? new Headers({
-          Authorization: `Bearer ${token}`,
-        })
-      : {},
-    body: body instanceof FormData ? body : JSON.stringify(body),
-  });
+  try {
+    const response = await fetch(apiUrl + endpoint, {
+      method: "POST",
+      headers: token
+        ? new Headers({
+            Authorization: `Bearer ${token}`,
+          })
+        : {},
+      body: body instanceof FormData ? body : JSON.stringify(body),
+    });
 
-  const json = await response.json();
-  if (response.status !== 200) {
-    return message.error(json.message);
+    let json;
+    try {
+      json = await response.json();
+    } catch (jsonErr) {
+      // If response is not JSON (e.g., network error), set a default error
+      json = { message: "An unknown error occurred." };
+    }
+    if (response.status !== 200) {
+      return { success: false, message: json.message || "Login failed. Please try again." };
+    }
+    return json;
+  } catch (ex) {
+    // Network error (e.g., Failed to fetch)
+    return { success: false, message: "Unable to connect to server. Please check your internet connection or try again later." };
   }
-
-  return json;
 };
