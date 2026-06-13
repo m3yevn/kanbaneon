@@ -7,7 +7,16 @@
         <a-radio-button value="sprints">Sprints</a-radio-button>
       </a-radio-group>
       <span v-if="projectKey" class="project-key">{{ projectKey }}</span>
+      <a-button type="link" class="search-toggle" @click="showSearch = !showSearch">
+        {{ showSearch ? "Hide search" : "Search & filter" }}
+      </a-button>
     </div>
+
+    <IssueSearchPanel
+      v-if="showSearch && !isLite"
+      :board-id="boardId"
+      @open-issue="openIssueFromSearch"
+    />
 
     <BacklogView
       v-if="viewMode === 'backlog' && !isLite"
@@ -149,6 +158,7 @@ import Watchers from "./Watchers.vue";
 import IssueDrawer from "./IssueDrawer.vue";
 import BacklogView from "./BacklogView.vue";
 import SprintPlanning from "./SprintPlanning.vue";
+import IssueSearchPanel from "./IssueSearchPanel.vue";
 
 export default {
   data() {
@@ -157,6 +167,7 @@ export default {
       isLoading: false,
       viewMode: "board",
       hideBacklogOnBoard: true,
+      showSearch: false,
       visible: false,
       addingList: null,
       watcherDetails: [],
@@ -199,6 +210,7 @@ export default {
     IssueDrawer,
     BacklogView,
     SprintPlanning,
+    IssueSearchPanel,
   },
   computed: {
     boardId() {
@@ -245,6 +257,9 @@ export default {
       };
     },
     openIssueFromSprint(issue) {
+      this.openIssueDrawer(issue, issue.listId);
+    },
+    openIssueFromSearch(issue) {
       this.openIssueDrawer(issue, issue.listId);
     },
     closeIssueDrawer() {
@@ -535,6 +550,7 @@ export default {
   color: #90caf9;
   font-weight: 600;
 }
+.search-toggle { color: #90caf9 !important; margin-left: auto; }
 
 .edit-card-textarea {
   margin-bottom: 10px;

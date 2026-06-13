@@ -13,16 +13,17 @@ Vue 3 + Konva kanban frontend, evolving into a lightweight Jira clone.
 | **Backlog view** | Ranked backlog list, reorder, assign to sprint |
 | **Sprint planning** | Create/start sprints, assign backlog issues |
 | **Issue drawer** | Right panel with edit + comments |
+| **Search & filters** | Query, type, priority, epic filters |
+| **Epic linking** | Link issues to epics, view epic children |
 | **Settings** | Organization shortcut, account, notifications |
 
 ## Next slices
 
 | # | Slice | Scope |
 |---|-------|-------|
-| 9 | **Filters & search** | Quick filters by assignee, type, priority |
-| 10 | **Epic board** | Epic linking and rollup view |
-| 11 | **Board settings** | Edit columns, project key, permissions |
-| 12 | **Deep links** | `/boards/:id/issues/:issueKey` shareable URLs |
+| 11 | **Epic board** | Dedicated epic rollup view |
+| 12 | **Board settings** | Edit columns, project key, permissions |
+| 13 | **Deep links** | `/boards/:id/issues/:issueKey` shareable URLs |
 
 ## Routes
 

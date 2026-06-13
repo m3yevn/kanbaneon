@@ -718,6 +718,62 @@ export async function addIssueComment(boardId, listId, cardId, text) {
   }
 }
 
+export async function searchIssues(boardId, filters = {}) {
+  try {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+    });
+    const qs = params.toString();
+    const response = await get(
+      `/boards/${boardId}/issues/search${qs ? `?${qs}` : ""}`
+    );
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getEpics(boardId) {
+  try {
+    const response = await get(`/boards/${boardId}/epics`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function linkIssueToEpic(boardId, listId, cardId, epicId) {
+  try {
+    const response = await post(
+      `/boards/${boardId}/lists/${listId}/cards/${cardId}/epic`,
+      { epicId },
+      token()
+    );
+    if (response.success) {
+      message.success("Linked to epic.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getEpicChildren(boardId, epicId) {
+  try {
+    const response = await get(`/boards/${boardId}/epics/${epicId}/children`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
 const get = async (endpoint) => {
   const response = await fetch(apiUrl + endpoint, {
     method: "GET",
