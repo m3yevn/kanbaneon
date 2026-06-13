@@ -87,6 +87,23 @@ const forgotGuard = (route) => {
 
 const nonLiteRoutes = [
   {
+    path: "/organizations",
+    name: "Organizations",
+    component: defineAsyncComponent({
+      loader: () => import("./components/Organizations/Organizations.vue"),
+    }),
+    beforeEnter: sessionGuard,
+  },
+  {
+    path: "/organizations/:id",
+    component: defineAsyncComponent({
+      loader: () => import("./components/Organizations/Organization.vue"),
+    }),
+    name: "Organization",
+    beforeEnter: sessionGuard,
+    props: true,
+  },
+  {
     path: "/teams",
     name: "Your teams",
     component: defineAsyncComponent({

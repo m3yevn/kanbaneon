@@ -49,7 +49,7 @@
               :xs="24"
               :md="8"
             >
-              <a-card class="board-card" :title="board.name" @click="openBoard(board.id)">
+              <a-card class="board-card" :title="board.projectKey ? `${board.projectKey} — ${board.name}` : board.name" @click="openBoard(board.id)">
                 Shared kanban board
               </a-card>
             </a-col>
@@ -79,7 +79,12 @@
     >
       <a-input
         v-model:value="state.boardName"
-        placeholder="Board name"
+        placeholder="Project name"
+        class="mb-2"
+      />
+      <a-input
+        v-model:value="state.projectKey"
+        placeholder="Project key (e.g. KAN)"
       />
     </a-modal>
   </div>
@@ -96,17 +101,14 @@ import {
   getTeamBoards,
   addTeamBoard,
 } from "../../helpers/ApiHelper";
+import { getJiraDefaultLists } from "../../helpers/jiraDefaults";
 import { store } from "../../store";
 import { message } from "ant-design-vue";
 
 const route = useRoute();
 const router = useRouter();
 
-const getTemplateList = () => [
-  { id: uuid(), name: "To-Do", children: [] },
-  { id: uuid(), name: "Doing", children: [] },
-  { id: uuid(), name: "Done", children: [] },
-];
+const getTemplateList = () => getJiraDefaultLists();
 
 const state = reactive({
   isLoading: false,
@@ -114,6 +116,7 @@ const state = reactive({
   boards: [],
   boardVisible: false,
   boardName: "",
+  projectKey: "",
 });
 
 const currentUserId = computed(() => String(store.state.user.id));
@@ -168,12 +171,14 @@ const handleAddBoard = async () => {
     const result = await addTeamBoard(route.params.id, {
       id: uuid(),
       name: state.boardName.trim(),
+      projectKey: state.projectKey.trim() || undefined,
       kanbanList: getTemplateList(),
     });
 
     if (result?.success) {
       state.boardVisible = false;
       state.boardName = "";
+      state.projectKey = "";
       await refreshBoards();
     }
   } catch (ex) {

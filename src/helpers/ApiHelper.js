@@ -498,6 +498,90 @@ export async function removeTeamMember(teamId, userId) {
   }
 }
 
+export async function getOrganizations() {
+  try {
+    const response = await get("/organizations");
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getOrganization(organizationId) {
+  try {
+    const response = await get(`/organizations/${organizationId}`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function addOrganization(organization) {
+  try {
+    const response = await post("/organizations", { ...organization }, token());
+    if (response.success) {
+      message.success("Organization is successfully created.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function deleteOrganization(organizationId) {
+  try {
+    const response = await del(`/organizations/${organizationId}`);
+    if (response.success) {
+      message.success("Organization is successfully deleted.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getOrganizationTeams(organizationId) {
+  try {
+    const response = await get(`/organizations/${organizationId}/teams`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getOrganizationBoards(organizationId) {
+  try {
+    const response = await get(`/organizations/${organizationId}/boards`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function addOrganizationBoard(organizationId, board) {
+  try {
+    const response = await post(
+      `/organizations/${organizationId}/boards`,
+      { ...board, organizationId },
+      token()
+    );
+    if (response.success) {
+      message.success("Project board is successfully created.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
 const get = async (endpoint) => {
   const response = await fetch(apiUrl + endpoint, {
     method: "GET",

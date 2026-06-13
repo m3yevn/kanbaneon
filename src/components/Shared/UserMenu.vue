@@ -6,7 +6,7 @@
 
 <script setup>
 import { h, ref } from 'vue';
-import { UserOutlined, BorderInnerOutlined, TeamOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import { UserOutlined, BorderInnerOutlined, TeamOutlined, SettingOutlined, ApartmentOutlined } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router';
 
 const selectedKeys = ref([]);
@@ -31,6 +31,12 @@ const items = ref(!isLite ? [
         icon: () => h(TeamOutlined),
         label: 'Your teams',
         route: '/teams'
+    },
+    {
+        key: 5,
+        icon: () => h(ApartmentOutlined),
+        label: 'Organizations',
+        route: '/organizations'
     },
     {
         key: 4,

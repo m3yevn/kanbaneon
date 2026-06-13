@@ -1,30 +1,19 @@
 <template>
   <section class="settings-organization">
     <p class="hint">
-      Organizations group multiple teams under one workspace. This feature is planned
-      for a future release — for now, use Teams to collaborate with members on shared boards.
+      Organizations are Jira-style workspaces — group teams and projects under one company account.
     </p>
-    <a-button type="primary" @click="goToTeams">Manage Teams</a-button>
+    <a-button type="primary" @click="goToOrganizations">Manage Organizations</a-button>
   </section>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-
 const router = useRouter();
-
-const goToTeams = () => {
-  router.push("/teams");
-};
+const goToOrganizations = () => router.push("/organizations");
 </script>
 
 <style scoped>
-.settings-organization {
-  padding: 8px 0;
-}
-
-.hint {
-  margin-bottom: 16px;
-  color: #555;
-}
+.settings-organization { padding: 8px 0; }
+.hint { margin-bottom: 16px; color: #555; }
 </style>

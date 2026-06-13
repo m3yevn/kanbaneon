@@ -4,10 +4,16 @@
       <div id="kanbaneon-canvas"></div>
     </div>
   </a-spin>
-  <a-modal title="Enter the details of new card" :visible="visible" @ok="handleOk" @cancel="handleCancel">
+  <a-modal title="Create issue" :visible="visible" @ok="handleOk" @cancel="handleCancel">
     <a-form layout="vertical" :model="cardDialog.newCard">
       <a-form-item label="Title" :rules="[{ required: true, message: 'Title is required' }]" name="title"> <a-input
           v-model:value="cardDialog.newCard.title"></a-input></a-form-item>
+      <a-form-item label="Type">
+        <a-select v-model:value="cardDialog.newCard.issueType" :options="issueTypeOptions" />
+      </a-form-item>
+      <a-form-item label="Priority">
+        <a-select v-model:value="cardDialog.newCard.priority" :options="priorityOptions" />
+      </a-form-item>
       <a-form-item label="Description">
         <a-textarea rows="8" class="ant-input edit-card-textarea" placeholder="Type here..."
           v-model:value="cardDialog.newCard.text" />
@@ -39,7 +45,16 @@
   <a-modal :title="cardDialog.title" :visible="cardDialog.visible" @ok="handleOkCardDialog"
     @cancel="handleCancelCardDialog">
     <a-form layout="vertical" :model="cardDialog.editingCard">
+      <a-form-item v-if="cardDialog.editingCard.issueKey" label="Issue key">
+        <a-input :value="cardDialog.editingCard.issueKey" disabled />
+      </a-form-item>
       <a-form-item label="Title"> <a-input v-model:value="cardDialog.editingCard.title"></a-input></a-form-item>
+      <a-form-item label="Type">
+        <a-select v-model:value="cardDialog.editingCard.issueType" :options="issueTypeOptions" />
+      </a-form-item>
+      <a-form-item label="Priority">
+        <a-select v-model:value="cardDialog.editingCard.priority" :options="priorityOptions" />
+      </a-form-item>
       <a-form-item label="Description">
         <a-textarea rows="8" class="ant-input edit-card-textarea" placeholder="Type here..."
           v-model:value="cardDialog.editingCard.text" />
@@ -91,6 +106,7 @@ import {
   getBoard,
   getProfiles
 } from '../../helpers/ApiHelper';
+import { ISSUE_TYPES, PRIORITIES } from '../../helpers/jiraDefaults';
 import * as uuid from "uuid";
 import { message } from "ant-design-vue";
 import Watchers from "./Watchers.vue";
@@ -108,11 +124,16 @@ export default {
         newCard: {
           title: "",
           text: "",
+          issueType: "task",
+          priority: "medium",
           isWatching: false
         },
         editingCard: {
           title: "",
           text: "",
+          issueType: "task",
+          priority: "medium",
+          issueKey: "",
           isWatching: false,
           watchers: []
         },
@@ -129,6 +150,14 @@ export default {
   },
   components: {
     Watchers
+  },
+  computed: {
+    issueTypeOptions() {
+      return ISSUE_TYPES.map((t) => ({ value: t.value, label: t.label }));
+    },
+    priorityOptions() {
+      return PRIORITIES.map((p) => ({ value: p.value, label: p.label }));
+    },
   },
   methods: {
     drawFns() {
@@ -165,6 +194,8 @@ export default {
       this.cardDialog.newCard = {
         title: "",
         text: "",
+        issueType: "task",
+        priority: "medium",
         isWatching: false
       }
     },
@@ -175,6 +206,9 @@ export default {
         editingCard: {
           text: "",
           title: "",
+          issueType: "task",
+          priority: "medium",
+          issueKey: "",
           isWatching: false,
           watchers: []
         },

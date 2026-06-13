@@ -10,7 +10,7 @@
           </a-card>
         </a-col>
         <a-col class="col" :xs="24" :md="6" v-for="board in boards" v-bind:key="board.id">
-          <a-card class="card" :title="board.name" @click="handleDirect(board.id)">
+          <a-card class="card" :title="boardTitle(board)" @click="handleDirect(board.id)">
             <KanbanImg />
           </a-card>
         </a-col>
@@ -28,16 +28,17 @@
       </div>
     </a-spin>
   </div>
-  <a-modal title="Enter the name of new board" :visible="visible" @ok="handleAddNewBoard" @cancel="handleCancelDialog">
-    <a-input class="ant-input" placeholder="Name" v-model:value="name" @change="handleNameChange" />
+  <a-modal title="New project board" :visible="visible" @ok="handleAddNewBoard" @cancel="handleCancelDialog">
+    <a-input class="ant-input" placeholder="Project name" v-model:value="name" @change="handleNameChange" />
     <label class="error-label">{{ error.name }}</label>
+    <a-input class="ant-input project-key" placeholder="Project key (e.g. KAN)" v-model:value="projectKey" />
 
     <a-radio-group class="radio-wrapper" v-model:value="mode" default-value="template" @change="handleModeChange">
       <a-radio class="radio-wrapper" value="empty">
         Create empty board
       </a-radio>
       <a-radio class="radio-wrapper" value="template">
-        Create with a template
+        Create with Jira columns (Backlog → Done)
       </a-radio>
     </a-radio-group>
     <template v-slot:footer>
@@ -55,24 +56,9 @@ import KanbanImg from "../../assets/KanbanImg.vue";
 import GetStartedImg from "../../assets/GetStartedImg.vue";
 import * as uuid from "uuid";
 import { addBoard, getBoards } from "../../helpers/ApiHelper";
+import { getJiraDefaultLists } from "../../helpers/jiraDefaults";
 
-const getTemplateList = () => [
-  {
-    id: uuid.v4(),
-    name: "To-Do",
-    children: [],
-  },
-  {
-    id: uuid.v4(),
-    name: "Doing",
-    children: [],
-  },
-  {
-    id: uuid.v4(),
-    name: "Done",
-    children: [],
-  },
-];
+const getTemplateList = () => getJiraDefaultLists();
 
 export default {
   data() {
@@ -85,6 +71,7 @@ export default {
       smallScreen: window.matchMedia("(max-width:456px)").matches,
       largeScreen: window.matchMedia("(min-width:456px)").matches,
       name: "",
+      projectKey: "",
       error: {
         name: "",
       },
@@ -133,8 +120,12 @@ export default {
     },
     handleCancelDialog() {
       this.name = "";
+      this.projectKey = "";
       this.visible = false;
       this.error.name = "";
+    },
+    boardTitle(board) {
+      return board.projectKey ? `${board.projectKey} — ${board.name}` : board.name;
     },
     async handleAddNewBoard() {
       if (!this.name) {
@@ -144,6 +135,7 @@ export default {
       const newBoard = {
         id: uuid.v4(),
         name: this.name,
+        projectKey: this.projectKey?.trim() || undefined,
         kanbanList: this.mode === "template" ? getTemplateList() : [],
       };
 
@@ -163,6 +155,10 @@ export default {
 .radio-wrapper {
   display: block;
   margin-top: 10px;
+}
+
+.project-key {
+  margin-top: 8px;
 }
 
 .col {

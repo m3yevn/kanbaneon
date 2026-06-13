@@ -1,4 +1,5 @@
 import { swapCardExternal, swapCardInternal } from "../helpers/ApiHelper";
+import { formatIssueLabel } from "../helpers/jiraDefaults";
 import { __dnd, __konva } from "./DrawCanvas";
 
 const isLite = import.meta.env.VITE_LITE_VERSION === "ON";
@@ -84,7 +85,7 @@ export function initListItem(list, x, e) {
 
     const titleText = standardText.clone();
     titleText.id(`LIST-${list?.id}-TEXT-${card?.id}`);
-    titleText.text(card?.title);
+    titleText.text(formatIssueLabel(card));
 
     titleText.attrs.cardDetails = card;
     titleText.attrs.parentList = list;
