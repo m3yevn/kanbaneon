@@ -33,6 +33,29 @@
             </template>
           </a-list>
 
+          <a-divider />
+
+          <div class="boards-header">
+            <h3>Team Boards</h3>
+            <a-button type="primary" @click="state.boardVisible = true">
+              New Board
+            </a-button>
+          </div>
+
+          <a-row v-if="state.boards.length" :gutter="16" class="boards-grid">
+            <a-col
+              v-for="board in state.boards"
+              :key="board.id"
+              :xs="24"
+              :md="8"
+            >
+              <a-card class="board-card" :title="board.name" @click="openBoard(board.id)">
+                Shared kanban board
+              </a-card>
+            </a-col>
+          </a-row>
+          <p v-else class="empty-boards">No team boards yet. Create one to collaborate.</p>
+
           <div v-if="isOwner" class="owner-actions">
             <a-divider />
             <a-popconfirm
@@ -47,21 +70,50 @@
         </a-card>
       </div>
     </a-spin>
+
+    <a-modal
+      title="Create team board"
+      :visible="state.boardVisible"
+      @ok="handleAddBoard"
+      @cancel="state.boardVisible = false"
+    >
+      <a-input
+        v-model:value="state.boardName"
+        placeholder="Board name"
+      />
+    </a-modal>
   </div>
 </template>
 
 <script setup>
 import { reactive, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getTeam, deleteTeam, removeTeamMember } from "../../helpers/ApiHelper";
+import { v4 as uuid } from "uuid";
+import {
+  getTeam,
+  deleteTeam,
+  removeTeamMember,
+  getTeamBoards,
+  addTeamBoard,
+} from "../../helpers/ApiHelper";
 import { store } from "../../store";
+import { message } from "ant-design-vue";
 
 const route = useRoute();
 const router = useRouter();
 
+const getTemplateList = () => [
+  { id: uuid(), name: "To-Do", children: [] },
+  { id: uuid(), name: "Doing", children: [] },
+  { id: uuid(), name: "Done", children: [] },
+];
+
 const state = reactive({
   isLoading: false,
   team: null,
+  boards: [],
+  boardVisible: false,
+  boardName: "",
 });
 
 const currentUserId = computed(() => String(store.state.user.id));
@@ -73,12 +125,18 @@ const isOwner = computed(() =>
   )
 );
 
+const refreshBoards = async () => {
+  const result = await getTeamBoards(route.params.id);
+  state.boards = result?.boards ?? [];
+};
+
 const refresh = async () => {
   try {
     state.isLoading = true;
     const result = await getTeam(route.params.id);
     if (result?.success) {
       state.team = result.team;
+      await refreshBoards();
     }
   } catch (ex) {
     console.error(ex);
@@ -95,15 +153,45 @@ const handleBack = () => {
   router.push("/teams");
 };
 
+const openBoard = (boardId) => {
+  router.push(`/boards/${boardId}`);
+};
+
+const handleAddBoard = async () => {
+  if (!state.boardName.trim()) {
+    message.error("Board name is required.");
+    return;
+  }
+
+  try {
+    state.isLoading = true;
+    const result = await addTeamBoard(route.params.id, {
+      id: uuid(),
+      name: state.boardName.trim(),
+      kanbanList: getTemplateList(),
+    });
+
+    if (result?.success) {
+      state.boardVisible = false;
+      state.boardName = "";
+      await refreshBoards();
+    }
+  } catch (ex) {
+    console.error(ex);
+  } finally {
+    state.isLoading = false;
+  }
+};
+
 const canRemoveMember = (member) => {
-  const isOwner = state.team?.members?.some(
+  const owner = state.team?.members?.some(
     (m) => String(m.userId) === currentUserId.value && m.role === "owner"
   );
   const isSelf = String(member.userId) === currentUserId.value;
   if (member.role === "owner") {
     return false;
   }
-  return isOwner || isSelf;
+  return owner || isSelf;
 };
 
 const handleRemoveMember = async (userId) => {
@@ -148,7 +236,7 @@ const handleDeleteTeam = async () => {
 }
 
 .team-detail {
-  max-width: 720px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -160,6 +248,30 @@ const handleDeleteTeam = async () => {
   font-size: 16px;
   color: #444;
   white-space: pre-wrap;
+}
+
+.boards-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.boards-grid {
+  margin-top: 8px;
+}
+
+.board-card {
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.board-card:hover {
+  transform: scale(1.02);
+}
+
+.empty-boards {
+  color: #666;
 }
 
 .owner-actions {

@@ -230,6 +230,29 @@ export async function addBoard(board) {
   }
 }
 
+export async function getTeamBoards(teamId) {
+  try {
+    const response = await get(`/teams/${teamId}/boards`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function addTeamBoard(teamId, board) {
+  try {
+    const response = await post(`/teams/${teamId}/boards`, { ...board }, token());
+    if (response.success) {
+      message.success("Team board is successfully added.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
 export async function addList(boardId, list) {
   try {
     const response = await post(

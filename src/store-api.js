@@ -10,6 +10,7 @@ import {
   deleteCard,
   swapList,
   swapCardExternal,
+  swapCardInternal,
   getProfile,
 } from "./helpers/ApiHelper";
 
@@ -276,4 +277,14 @@ export const swapKanbanCardInternal = isLite
         [userId]: currentBoards,
       });
     }
-  : async (state, { parentItemIndex, list, card }) => {};
+  : async (state, { parentItemIndex, list, card }) => {
+      const currentIndex = list.children.findIndex((item) => item.id === card.id);
+      if (currentIndex > -1) {
+        await swapCardInternal(
+          state.currentBoardID,
+          list.id,
+          currentIndex,
+          parentItemIndex
+        );
+      }
+    };

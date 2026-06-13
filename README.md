@@ -1,74 +1,44 @@
 # Kanbaneon
 
-**📌A canvas based Kanban board**
+**A canvas-based Kanban board** — drag-and-drop cards rendered on Konva canvas, not DOM.
 
-<p>Version 1.0.0</p>
-<p>by m3yevn</p>
+Version 1.0.0 · by m3yevn · [Deployed on Netlify](https://app.netlify.com/sites/kanbaneon/deploys)
 
-Deployed on Netlify
+## Features
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/3f09507e-0b31-4009-8d82-5ef7ce9a6aa6/deploy-status)](https://app.netlify.com/sites/kanbaneon/deploys)
+- Canvas-based 2D Scrum board (Konva)
+- Personal and **team boards** with shared access
+- Teams: create, invite members, collaborate on boards
+- User profiles, notifications, JWT auth
+- Lite mode: offline IndexedDB (no API)
 
-<hr/>
+## Tech stack
 
- - Easy and Fast Drag And Drop Kanban Card
- - Attractive UI/UX design
- - No DOM element for Kanban
- - Canvas for rendering 2D Scrum Board
+| Layer | Stack |
+|-------|-------|
+| Frontend | Vue 3, Vite, Vuex, Vue Router, Ant Design Vue, Konva |
+| API | [kanbaneon-api](../kanbaneon-api) — Hapi.js, MongoDB, JWT |
+| Deploy | Netlify (frontend) |
 
-
-
-
-## ⭐ Public Url
-
-N.A
-
-## 📚 Tech Stack
-
-N.A
-
-## 📸 Screenshots
-
-N.A
-
-## 📜 Scripts
+## Scripts
 
 ```sh
-dev : $ vite
-build : $ vite build
-serve : $ vite preview
-
+npm run dev      # Vite dev server
+npm run build    # Production build
+npm run serve    # Preview build
 ```
 
-## 🔑 Keywords
+## Environment
 
+```env
+VITE_KANBANEON_API_URL=https://your-api.example.com/api/v1
+VITE_LITE_VERSION=OFF   # set ON for offline lite mode
+```
 
+## Public URL
 
-## 👾 Submit issues at
+https://kanbaneon.netlify.app (or your Netlify deploy)
 
-Visit the repository to open bug reports and issues
+## License
 
-## ©️ License
-
-This project does not have a license.
-
-## Dependencies
-
- - ant-design-vue : $ ^2.2.2
- - konva : $ ^8.1.1
- - uuid : $ ^8.3.2
- - vue : $ ^3.0.5
- - vue-router : $ 4
-
-
-## Dev Dependencies
-
- - @vitejs/plugin-vue : $ ^1.2.5
- - @vue/compiler-sfc : $ ^3.0.5
- - vite : $ ^2.4.2
-
-
-<img src="https://cdn.dribbble.com/users/2401141/screenshots/5487982/developers-gif-showcase.gif"/>
-
-<hr/>
-Happy Coding!
+No license specified.
