@@ -1,5 +1,5 @@
 <template>
-  <Header v-if="$store.state.user.isLoggedIn && largeScreen" />
+  <Header v-if="$store.state.user.isLoggedIn && largeScreen && $route.path !== '/'" />
   <router-view v-if="largeScreen" />
   <MobileMessage v-if="!largeScreen" />
 </template>

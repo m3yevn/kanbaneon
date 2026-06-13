@@ -9,7 +9,7 @@ const getToken = () => (isLite ? "LITE" : localStorage.getItem("token"));
 const logoutGuard = isLite
   ? () => {
       if (store.state.user.isLoggedIn) {
-        return { path: "/" };
+        return { path: "/boards" };
       }
       return true;
     }
@@ -39,7 +39,7 @@ const logoutGuard = isLite
       }
 
       if (store.state.user.isLoggedIn) {
-        return { path: "/" };
+        return { path: "/boards" };
       }
       return true;
     };
@@ -76,6 +76,28 @@ const sessionGuard = isLite
       } else {
         return { path: "/login" };
       }
+    };
+
+const homeGuard = isLite
+  ? () => true
+  : async () => {
+      const token = getToken();
+      if (token) {
+        try {
+          const result = await reauth(token);
+          if (result?.success) {
+            store.state.user = {
+              username: result.reauth.username,
+              id: result.reauth.id,
+              isLoggedIn: true,
+            };
+            return { path: "/boards" };
+          }
+        } catch (ex) {
+          console.error(ex);
+        }
+      }
+      return true;
     };
 
 const forgotGuard = (route) => {
@@ -161,9 +183,9 @@ const nonLiteRoutes = [
 export const routes = [
   {
     path: "/",
-    beforeEnter: sessionGuard,
-    props: true,
-    redirect: "/boards",
+    name: "Kanbaneon",
+    component: () => import("./components/Views/Landing.vue"),
+    beforeEnter: homeGuard,
   },
   {
     path: "/login",
