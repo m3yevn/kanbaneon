@@ -1,11 +1,11 @@
 <template>
-  <Header v-if="$store.state.user.isLoggedIn && largeScreen && $route.path !== '/'" />
+  <AppHeader v-if="$store.state.user.isLoggedIn && largeScreen && $route.path !== '/'" />
   <router-view v-if="largeScreen" />
   <MobileMessage v-if="!largeScreen" />
 </template>
 
 <script>
-import Header from "./components/Shared/Header.vue";
+import AppHeader from "./components/Shared/Header.vue";
 import MobileMessage from "./components/Views/MobileMessage.vue";
 
 export default {
@@ -16,7 +16,7 @@ export default {
     };
   },
   components: {
-    Header,
+    AppHeader,
     MobileMessage,
   },
   methods: {

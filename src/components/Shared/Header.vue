@@ -69,7 +69,6 @@
 </template>
 
 <script>
-import PlusIcon from "../../assets/PlusIcon.vue";
 import DotsIcon from "../../assets/DotsIcon.vue";
 import UserIcon from "../../assets/UserIcon.vue";
 import UserMenu from "./UserMenu.vue";
@@ -77,6 +76,7 @@ import { addListOnCanvas } from "../../utils/DrawCanvas";
 import { deleteBoard, getBoard } from "../../helpers/ApiHelper";
 
 export default {
+  name: "AppHeader",
   data() {
     return {
       isLite: import.meta.env.VITE_LITE_VERSION === "ON",
@@ -102,7 +102,6 @@ export default {
     };
   },
   components: {
-    PlusIcon,
     UserIcon,
     DotsIcon,
     UserMenu
