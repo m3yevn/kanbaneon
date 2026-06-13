@@ -17,10 +17,16 @@
             </a-col>
           </a-row>
           <a-divider />
-          <h3>Teams</h3>
+          <div class="header-row">
+            <h3>Teams</h3>
+            <a-button type="primary" @click="state.teamVisible = true">New Team</a-button>
+          </div>
           <a-list bordered :data-source="state.teams">
             <template #renderItem="{ item }">
-              <a-list-item>{{ item.name }}</a-list-item>
+              <a-list-item class="team-item" @click="openTeam(item.id)">
+                {{ item.name }}
+                <span class="team-desc">{{ item.description }}</span>
+              </a-list-item>
             </template>
           </a-list>
         </a-card>
@@ -29,6 +35,10 @@
     <a-modal title="New project board" :visible="state.boardVisible" @ok="createBoard" @cancel="state.boardVisible = false">
       <a-input v-model:value="state.boardName" placeholder="Project name" class="mb-2" />
       <a-input v-model:value="state.projectKey" :placeholder="`Key (default ${state.organization?.slug || 'KAN'})`" />
+    </a-modal>
+    <a-modal title="New team in organization" :visible="state.teamVisible" @ok="createTeam" @cancel="state.teamVisible = false">
+      <a-input v-model:value="state.teamName" placeholder="Team name" class="mb-2" />
+      <a-textarea v-model:value="state.teamDescription" placeholder="Description" :rows="3" />
     </a-modal>
   </div>
 </template>
@@ -42,6 +52,7 @@ import {
   getOrganizationBoards,
   getOrganizationTeams,
   addOrganizationBoard,
+  addOrganizationTeam,
 } from "../../helpers/ApiHelper";
 import { getJiraDefaultLists } from "../../helpers/jiraDefaults";
 
@@ -53,8 +64,11 @@ const state = reactive({
   boards: [],
   teams: [],
   boardVisible: false,
+  teamVisible: false,
   boardName: "",
   projectKey: "",
+  teamName: "",
+  teamDescription: "",
 });
 
 const refresh = async () => {
@@ -73,6 +87,7 @@ const refresh = async () => {
 onMounted(refresh);
 
 const openBoard = (id) => router.push(`/boards/${id}`);
+const openTeam = (id) => router.push(`/teams/${id}`);
 
 const createBoard = async () => {
   if (!state.boardName.trim()) return;
@@ -91,6 +106,24 @@ const createBoard = async () => {
   }
   state.isLoading = false;
 };
+
+const createTeam = async () => {
+  if (!state.teamName.trim()) return;
+  state.isLoading = true;
+  const result = await addOrganizationTeam(route.params.id, {
+    id: uuid(),
+    name: state.teamName.trim(),
+    description: state.teamDescription.trim(),
+    members: [],
+  });
+  if (result?.success) {
+    state.teamVisible = false;
+    state.teamName = "";
+    state.teamDescription = "";
+    await refresh();
+  }
+  state.isLoading = false;
+};
 </script>
 
 <style scoped>
@@ -99,5 +132,7 @@ const createBoard = async () => {
 .back { margin-bottom: 16px; }
 .header-row { display: flex; justify-content: space-between; align-items: center; }
 .board-card { margin-bottom: 12px; cursor: pointer; }
+.team-item { cursor: pointer; }
+.team-desc { color: #888; margin-left: 8px; font-size: 12px; }
 .mb-2 { margin-bottom: 8px; }
 </style>

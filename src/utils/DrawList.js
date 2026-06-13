@@ -38,7 +38,11 @@ export function initList() {
     return;
   }
 
-  kanbanList().forEach((list, index) => {
+  const lists = this.hideBacklogOnBoard
+    ? kanbanList().filter((l) => l.name !== "Backlog" && l.id !== "backlog")
+    : kanbanList();
+
+  lists.forEach((list, index) => {
     this.drawFns().initListItem(list, xCount);
 
     const listRect = standardRect.clone();

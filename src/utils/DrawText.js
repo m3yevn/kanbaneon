@@ -13,6 +13,12 @@ export default function getText({ x }) {
   });
 
   text.on("click", (e) => {
+    const cardDetails = e?.currentTarget?.attrs?.cardDetails;
+    const parentList = e?.currentTarget?.attrs?.parentList;
+    if (typeof this.openIssueDrawer === "function") {
+      this.openIssueDrawer(cardDetails, parentList?.id);
+      return;
+    }
     this.cardDialog = {
       ...this.cardDialog,
       visible: true,

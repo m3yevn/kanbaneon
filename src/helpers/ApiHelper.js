@@ -582,6 +582,142 @@ export async function addOrganizationBoard(organizationId, board) {
   }
 }
 
+export async function addOrganizationTeam(organizationId, team) {
+  try {
+    const response = await post(
+      `/organizations/${organizationId}/teams`,
+      { ...team, organizationId },
+      token()
+    );
+    if (response.success) {
+      message.success("Team is successfully created.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getBacklog(boardId) {
+  try {
+    const response = await get(`/boards/${boardId}/backlog`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function reorderBacklog(boardId, orderedIds) {
+  try {
+    const response = await post(
+      `/boards/${boardId}/backlog/reorder`,
+      { orderedIds },
+      token()
+    );
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getSprints(boardId) {
+  try {
+    const response = await get(`/boards/${boardId}/sprints`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function addSprint(boardId, sprint) {
+  try {
+    const response = await post(`/boards/${boardId}/sprints`, sprint, token());
+    if (response.success) {
+      message.success("Sprint created.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function assignIssuesToSprint(boardId, sprintId, issues) {
+  try {
+    const response = await post(
+      `/boards/${boardId}/sprints/${sprintId}/assign`,
+      { issues },
+      token()
+    );
+    if (response.success) {
+      message.success("Issues added to sprint.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function startSprint(boardId, sprintId) {
+  try {
+    const response = await post(
+      `/boards/${boardId}/sprints/${sprintId}/start`,
+      {},
+      token()
+    );
+    if (response.success) {
+      message.success("Sprint started.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getSprintIssues(boardId, sprintId) {
+  try {
+    const response = await get(`/boards/${boardId}/sprints/${sprintId}/issues`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getIssueComments(boardId, listId, cardId) {
+  try {
+    const response = await get(
+      `/boards/${boardId}/lists/${listId}/cards/${cardId}/comments`
+    );
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function addIssueComment(boardId, listId, cardId, text) {
+  try {
+    const response = await post(
+      `/boards/${boardId}/lists/${listId}/cards/${cardId}/comments`,
+      { text },
+      token()
+    );
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
 const get = async (endpoint) => {
   const response = await fetch(apiUrl + endpoint, {
     method: "GET",

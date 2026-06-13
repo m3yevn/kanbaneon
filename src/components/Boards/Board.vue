@@ -1,9 +1,36 @@
 <template>
-  <a-spin :spinning="isLoading" tip="Loading..." size="large">
-    <div class="canvas-wrapper">
-      <div id="kanbaneon-canvas"></div>
+  <div class="board-shell">
+    <div v-if="!isLite" class="view-tabs">
+      <a-radio-group v-model:value="viewMode" button-style="solid" @change="onViewChange">
+        <a-radio-button value="board">Board</a-radio-button>
+        <a-radio-button value="backlog">Backlog</a-radio-button>
+        <a-radio-button value="sprints">Sprints</a-radio-button>
+      </a-radio-group>
+      <span v-if="projectKey" class="project-key">{{ projectKey }}</span>
     </div>
-  </a-spin>
+
+    <BacklogView
+      v-if="viewMode === 'backlog' && !isLite"
+      ref="backlogRef"
+      :board-id="boardId"
+      @open-issue="openIssueDrawer"
+      @create="openCreateInBacklog"
+      @board-updated="onBoardUpdated"
+    />
+    <SprintPlanning
+      v-if="viewMode === 'sprints' && !isLite"
+      ref="sprintRef"
+      :board-id="boardId"
+      @open-issue="openIssueFromSprint"
+      @board-updated="onBoardUpdated"
+    />
+
+    <a-spin v-show="viewMode === 'board'" :spinning="isLoading" tip="Loading..." size="large">
+      <div class="canvas-wrapper">
+        <div id="kanbaneon-canvas"></div>
+      </div>
+    </a-spin>
+  </div>
   <a-modal title="Create issue" :visible="visible" @ok="handleOk" @cancel="handleCancel">
     <a-form layout="vertical" :model="cardDialog.newCard">
       <a-form-item label="Title" :rules="[{ required: true, message: 'Title is required' }]" name="title"> <a-input
@@ -80,6 +107,15 @@
       </a-button>
     </template>
   </a-modal>
+  <IssueDrawer
+    :open="issueDrawer.visible"
+    :board-id="boardId"
+    :list-id="issueDrawer.listId"
+    :issue="issueDrawer.issue"
+    @close="closeIssueDrawer"
+    @updated="onBoardUpdated"
+    @delete="handleDeleteFromDrawer"
+  />
 </template>
 
 <script>
@@ -110,12 +146,17 @@ import { ISSUE_TYPES, PRIORITIES } from '../../helpers/jiraDefaults';
 import * as uuid from "uuid";
 import { message } from "ant-design-vue";
 import Watchers from "./Watchers.vue";
+import IssueDrawer from "./IssueDrawer.vue";
+import BacklogView from "./BacklogView.vue";
+import SprintPlanning from "./SprintPlanning.vue";
 
 export default {
   data() {
     return {
       isLite: import.meta.env.VITE_LITE_VERSION === "ON",
       isLoading: false,
+      viewMode: "board",
+      hideBacklogOnBoard: true,
       visible: false,
       addingList: null,
       watcherDetails: [],
@@ -146,12 +187,26 @@ export default {
           name: "",
         },
       },
+      issueDrawer: {
+        visible: false,
+        issue: null,
+        listId: null,
+      },
     };
   },
   components: {
-    Watchers
+    Watchers,
+    IssueDrawer,
+    BacklogView,
+    SprintPlanning,
   },
   computed: {
+    boardId() {
+      return this.$route.params.id || this.$store.state.currentBoardID;
+    },
+    projectKey() {
+      return this.$store.api?.board?.projectKey;
+    },
     issueTypeOptions() {
       return ISSUE_TYPES.map((t) => ({ value: t.value, label: t.label }));
     },
@@ -160,6 +215,55 @@ export default {
     },
   },
   methods: {
+    onViewChange() {
+      if (this.viewMode === "board") {
+        this.$nextTick(() => this.drawFns().initCanvas());
+      }
+    },
+    onBoardUpdated(board) {
+      this.$store.api = { board };
+      if (this.viewMode === "board") {
+        this.drawFns().initCanvas();
+      }
+    },
+    findBacklogList() {
+      const lists = this.$store.api?.board?.kanbanList || [];
+      return lists.find((l) => l.name === "Backlog" || l.id === "backlog");
+    },
+    openCreateInBacklog() {
+      const backlog = this.findBacklogList();
+      if (backlog) {
+        this.addingList = backlog;
+        this.visible = true;
+      }
+    },
+    openIssueDrawer(issue, listId) {
+      this.issueDrawer = {
+        visible: true,
+        issue,
+        listId: listId || issue?.listId,
+      };
+    },
+    openIssueFromSprint(issue) {
+      this.openIssueDrawer(issue, issue.listId);
+    },
+    closeIssueDrawer() {
+      this.issueDrawer = { visible: false, issue: null, listId: null };
+    },
+    async handleDeleteFromDrawer() {
+      const { issue, listId } = this.issueDrawer;
+      if (!issue) return;
+      const deletedResult = this.isLite
+        ? this.deleteCardOnCanvas({ id: issue.id, listId })
+        : await deleteCard(this.boardId, { id: issue.id, listId });
+      if (deletedResult?.board) {
+        this.onBoardUpdated(deletedResult.board);
+      }
+      this.closeIssueDrawer();
+      if (this.viewMode === "board") {
+        this.drawFns().initCanvas();
+      }
+    },
     drawFns() {
       return {
         initCanvas: initCanvas.bind(this),
@@ -412,6 +516,24 @@ export default {
 .canvas-wrapper {
   margin-top: 140px;
   width: 100%;
+}
+
+.view-tabs {
+  position: fixed;
+  top: 120px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 24px;
+  background: rgba(26, 35, 126, 0.95);
+}
+
+.project-key {
+  color: #90caf9;
+  font-weight: 600;
 }
 
 .edit-card-textarea {
