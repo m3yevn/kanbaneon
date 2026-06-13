@@ -36,14 +36,13 @@
         >
       </div>
     </a-spin>
-  </div>
-  <a-modal
-    style="top: 20px"
-    title="Enter the details of new team"
-    :visible="state.visible"
-    @ok="handleAddNewTeam"
-    @cancel="handleCancelDialog"
-  >
+    <a-modal
+      style="top: 20px"
+      title="Enter the details of new team"
+      :visible="state.visible"
+      @ok="handleAddNewTeam"
+      @cancel="handleCancelDialog"
+    >
     <a-form layout="vertical" :model="state.teamForm">
       <a-form-item label="Name">
         <a-input
@@ -173,6 +172,7 @@
       </a-button>
     </template>
   </a-modal>
+  </div>
 </template>
 
 <script setup>
