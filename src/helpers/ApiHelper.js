@@ -393,6 +393,88 @@ export async function swapCardInternal(boardId, listId, from, to) {
   }
 }
 
+export async function getTeams() {
+  try {
+    const response = await get("/teams");
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function getTeam(teamId) {
+  try {
+    const response = await get(`/teams/${teamId}`);
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function addTeam(team) {
+  try {
+    const response = await post("/teams", { ...team }, token());
+    if (response.success) {
+      message.success("Team is successfully created.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function editTeam(teamId, team) {
+  try {
+    const response = await put(`/teams/${teamId}`, { ...team });
+    if (response.success) {
+      message.success("Team is successfully updated.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function deleteTeam(teamId) {
+  try {
+    const response = await del(`/teams/${teamId}`);
+    if (response.success) {
+      message.success("Team is successfully deleted.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function addTeamMember(teamId, member) {
+  try {
+    const response = await post(`/teams/${teamId}/members`, { ...member }, token());
+    if (response.success) {
+      message.success("Member is successfully added.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
+export async function removeTeamMember(teamId, userId) {
+  try {
+    const response = await del(`/teams/${teamId}/members/${userId}`);
+    if (response.success) {
+      message.success("Member is successfully removed.");
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
 const get = async (endpoint) => {
   const response = await fetch(apiUrl + endpoint, {
     method: "GET",

@@ -4,7 +4,7 @@
       <a-row v-if="state.teams?.length" :gutter="16">
         <a-col :xs="24" :md="6" class="col">
           <a-card class="add-new-btn-card" @click="handleCreateNewTeam">
-            <a-button @click="visible = true" type="primary" size="large">
+            <a-button type="primary" size="large">
               <PlusIcon />New Team
             </a-button>
           </a-card>
@@ -25,7 +25,7 @@
           </a-card>
         </a-col>
       </a-row>
-      <div v-if="!boards?.length && !isLoading" class="wrapper">
+      <div v-if="!state.teams?.length && !state.isLoading" class="wrapper">
         <CreateTeamImg />
         <a-button
           @click="handleCreateNewTeam"
@@ -168,7 +168,7 @@
 
     <template v-slot:footer>
       <a-button key="back" @click="handleCancelDialog"> Cancel </a-button>
-      <a-button key="submit" type="primary" @click="handleAddNewBoard">
+      <a-button key="submit" type="primary" @click="handleAddNewTeam">
         Confirm
       </a-button>
     </template>
@@ -176,13 +176,18 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { v4 as uuid } from "uuid";
 import TeamImg from "../../assets/Team.vue";
 import CreateTeamImg from "../../assets/CreateTeam.vue";
-import { searchProfiles } from "../../helpers/ApiHelper";
+import PlusIcon from "../../assets/PlusIcon.vue";
+import { searchProfiles, getTeams, addTeam } from "../../helpers/ApiHelper";
 import { message } from "ant-design-vue";
 import UserIcon from "../../assets/UserIcon.vue";
 import { store } from "../../store";
+
+const router = useRouter();
 
 const state = reactive({
   isLoading: false,
@@ -197,14 +202,48 @@ const state = reactive({
   },
 });
 
-const handleDirect = () => {};
+const resetTeamForm = () => {
+  state.teamForm = {
+    name: "",
+    description: "",
+    members: [],
+  };
+  state.searchText = "";
+  state.searchedUsers = [];
+};
+
+const refresh = async () => {
+  try {
+    state.isLoading = true;
+    const result = await getTeams();
+    state.teams = result?.teams ?? [];
+  } catch (ex) {
+    console.error(ex);
+  } finally {
+    state.isLoading = false;
+  }
+};
+
+onMounted(() => {
+  refresh();
+});
+
+const handleDirect = (id) => {
+  router.push(`/teams/${id}`);
+};
 
 const handleCreateNewTeam = () => {
+  resetTeamForm();
   state.visible = true;
 };
 
+const toMemberPayload = (member) => ({
+  userId: String(member._id || member.id || member.userId),
+  username: member.username,
+});
+
 const handleAddMember = (member) => {
-  state.teamForm.members.push(member);
+  state.teamForm.members.push(toMemberPayload(member));
 };
 
 const handleRemoveMember = (username) => {
@@ -212,21 +251,48 @@ const handleRemoveMember = (username) => {
     (member) => member.username !== username
   );
 };
-const handleAddNewTeam = () => {};
+
+const handleAddNewTeam = async () => {
+  if (!state.teamForm.name?.trim()) {
+    message.error("Team name is required.");
+    return;
+  }
+
+  try {
+    state.isLoading = true;
+    const result = await addTeam({
+      id: uuid(),
+      name: state.teamForm.name.trim(),
+      description: state.teamForm.description?.trim() || "",
+      members: state.teamForm.members,
+    });
+
+    if (result?.success) {
+      state.visible = false;
+      resetTeamForm();
+      await refresh();
+    }
+  } catch (ex) {
+    console.error(ex);
+  } finally {
+    state.isLoading = false;
+  }
+};
 
 const handleCancelDialog = () => {
   state.visible = false;
+  resetTeamForm();
 };
 
 const handleSearchMembers = async () => {
   try {
     const result = await searchProfiles(state.searchText);
-    if (result.success) {
+    if (result?.success) {
       state.searchedUsers = result.users.filter(
         (user) => user.username !== store.state.user.username
       );
     } else {
-      message.error("There are no users like the username you have search.");
+      message.error("There are no users like the username you have searched.");
     }
   } catch (ex) {
     console.error(ex);
