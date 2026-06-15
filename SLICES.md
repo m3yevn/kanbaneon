@@ -16,6 +16,7 @@ Vue 3 + Konva kanban frontend, evolving into a lightweight Jira clone.
 | **Search & filters** | Query, type, priority, epic filters |
 | **Epic linking** | Link issues to epics, view epic children |
 | **Settings** | Organization shortcut, account, notifications |
+| **Docs page** | `/docs` — quick start, concepts, API link |
 
 ## Next slices
 

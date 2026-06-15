@@ -188,6 +188,10 @@ export const routes = [
     beforeEnter: homeGuard,
   },
   {
+    path: "/docs",
+    component: () => import("./components/Views/Docs.vue"),
+  },
+  {
     path: "/login",
     component: () => import("./components/Auth/Login.vue"),
     beforeEnter: logoutGuard,

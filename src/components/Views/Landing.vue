@@ -6,6 +6,7 @@
         <nav>
           <a href="#features">Features</a>
           <a href="#jira">Jira-like</a>
+          <router-link to="/docs">Docs</router-link>
           <router-link to="/login">Log in</router-link>
           <router-link to="/signup" class="nav-cta">Sign up free</router-link>
         </nav>
@@ -87,6 +88,8 @@
         </p>
         <p>
           <router-link to="/privacy-policy">Privacy</router-link>
+          ·
+          <router-link to="/docs">Docs</router-link>
           ·
           <router-link to="/terms-and-conditions">Terms</router-link>
         </p>
