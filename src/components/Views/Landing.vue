@@ -137,7 +137,7 @@
 }
 
 .accent {
-  color: var(--kb-violet);
+  color: var(--kb-accent);
 }
 
 nav {
@@ -159,8 +159,8 @@ nav a:hover {
 }
 
 .nav-cta {
-  background: linear-gradient(135deg, var(--kb-accent), var(--kb-violet));
-  color: #060a12 !important;
+  background: linear-gradient(135deg, #a3e635, var(--kb-accent));
+  color: #1a2e05 !important;
   padding: 8px 18px;
   border-radius: 10px;
   font-weight: 700;
@@ -168,7 +168,7 @@ nav a:hover {
 
 .nav-cta:hover {
   opacity: 0.92;
-  color: #060a12 !important;
+  color: #1a2e05 !important;
 }
 
 .hero {

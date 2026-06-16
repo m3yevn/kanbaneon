@@ -22,7 +22,9 @@
   --kb-shadow-glow: 0 4px 16px rgba(101, 163, 13, 0.15);
   --kb-font: "Inter", system-ui, -apple-system, sans-serif;
   --kb-gradient: linear-gradient(180deg, #ffffff 0%, #f4f5f7 100%);
-  --kb-header-h: 96px;
+  --kb-header-h: 56px;
+  --kb-sidebar-w: 260px;
+  --kb-workspace-top: 56px;
 }
 
 *,
@@ -53,8 +55,12 @@ body {
 
 .kb-page {
   padding: 24px;
-  min-height: calc(100vh - var(--kb-header-h));
-  margin-top: var(--kb-header-h);
+  min-height: calc(100vh - var(--kb-workspace-top));
+}
+
+.kb-workspace .container,
+.kb-workspace .kb-page {
+  margin-top: 0;
 }
 
 .kb-panel {
@@ -104,7 +110,7 @@ body {
 }
 
 .kb-brand-sub {
-  color: var(--kb-violet);
+  color: var(--kb-accent-dim);
 }
 
 .error-label {

@@ -160,6 +160,7 @@ import {
   getProfiles
 } from '../../helpers/ApiHelper';
 import { ISSUE_TYPES, PRIORITIES } from '../../helpers/jiraDefaults';
+import { pushRecentBoard } from '../../helpers/workspaceNav';
 import * as uuid from "uuid";
 import { message } from "ant-design-vue";
 import Watchers from "./Watchers.vue";
@@ -525,6 +526,7 @@ export default {
           this.$store.api = {
             board: data?.board
           };
+          pushRecentBoard(data.board);
         }
         this.openIssueFromRoute();
       } catch (ex) {
@@ -566,16 +568,14 @@ export default {
 
 <style scoped>
 .canvas-wrapper {
-  margin-top: calc(var(--kb-header-h) + 56px);
+  margin-top: 0;
   width: 100%;
   padding: 0 16px 32px;
 }
 
 .view-tabs {
-  position: fixed;
-  top: var(--kb-header-h);
-  left: 0;
-  right: 0;
+  position: sticky;
+  top: 0;
   z-index: 50;
   display: flex;
   align-items: center;

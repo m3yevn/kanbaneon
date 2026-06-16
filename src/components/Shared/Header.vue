@@ -1,22 +1,31 @@
 <template>
-  <div class="header">
+  <div class="header" :class="{ compact }">
     <div class="row-container">
 
-      <a-row class="header-body">
-        <a-col class="icon-container" :md="showNewList ? 14 : 18" :xl="showNewList ? 18 : 21"
+      <a-row class="header-body" align="middle" :class="{ 'kb-mobile-pad': mobile }">
+        <a-col v-if="!compact" class="icon-container" :md="showNewList ? 14 : 18" :xl="showNewList ? 18 : 21"
           :xxl="showNewList ? 18 : 22">
           <h2 class="title" @click="handleDirectHome">
             KAN<span class="subtitle">BANEON</span>
           </h2>
         </a-col>
-        <a-col :xl="3" :md="5" :xxl="2" v-if="showNewList && largeScreen"></a-col>
-        <a-col :span="1" class="icon-btn-wrapper">
+        <a-col v-else flex="auto" class="breadcrumb-inline">
+          <a-breadcrumb>
+            <a-breadcrumb-item><router-link to="/boards">Projects</router-link></a-breadcrumb-item>
+            <a-breadcrumb-item v-if="$route.name">{{ $route.name }}</a-breadcrumb-item>
+            <a-breadcrumb-item v-if="currentBoard?.name">{{ currentBoard?.name }}</a-breadcrumb-item>
+          </a-breadcrumb>
+        </a-col>
+        <a-col class="icon-btn-wrapper">
+          <a-button v-if="compact" type="text" class="search-btn" aria-label="Search" @click="$emit('open-search')">
+            <SearchOutlined />
+          </a-button>
           <div class="icon-btn" v-if="showNewList" shape="round"
             @click="largeScreen ? (visibleEditBoard = true) : (popupMenu = true)">
             <DotsIcon />
           </div>
         </a-col>
-        <a-col :span="1" v-if="$store.state.user.isLoggedIn">
+        <a-col v-if="$store.state.user.isLoggedIn" class="user-col">
           <a-popover :title="$store.state.user.username" trigger="click">
             <template #content>
               <span class="name">{{ $store.state.profile?.name }}</span>
@@ -32,14 +41,13 @@
         </a-col>
       </a-row>
 
-      <a-row class="header-breadcrumb">
+      <a-row v-if="!compact" class="header-breadcrumb">
         <h3>
           <a-breadcrumb>
-            <a-breadcrumb-item><router-link to="/">Home</router-link></a-breadcrumb-item>
+            <a-breadcrumb-item><router-link to="/boards">Projects</router-link></a-breadcrumb-item>
             <a-breadcrumb-item :key="$route.path">{{ $route.name }}</a-breadcrumb-item>
             <a-breadcrumb-item v-if="currentBoard?.name" :key="currentBoard?.name">
-              {{ currentBoard?.name
-              }}</a-breadcrumb-item>
+              {{ currentBoard?.name }}</a-breadcrumb-item>
           </a-breadcrumb>
         </h3>
       </a-row>
@@ -72,11 +80,17 @@
 import DotsIcon from "../../assets/DotsIcon.vue";
 import UserIcon from "../../assets/UserIcon.vue";
 import UserMenu from "./UserMenu.vue";
+import { SearchOutlined } from "@ant-design/icons-vue";
 import { addListOnCanvas } from "../../utils/DrawCanvas";
 import { deleteBoard, getBoard } from "../../helpers/ApiHelper";
 
 export default {
   name: "AppHeader",
+  props: {
+    compact: { type: Boolean, default: false },
+    mobile: { type: Boolean, default: false },
+  },
+  emits: ["open-search"],
   data() {
     return {
       isLite: import.meta.env.VITE_LITE_VERSION === "ON",
@@ -104,7 +118,8 @@ export default {
   components: {
     UserIcon,
     DotsIcon,
-    UserMenu
+    UserMenu,
+    SearchOutlined,
   },
   watch: {
     async $route(to, from) {
@@ -214,15 +229,32 @@ export default {
 
 <style scoped>
 .header {
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   z-index: 100;
-  background: var(--kb-surface-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--kb-surface);
   border-bottom: 1px solid var(--kb-border);
   box-shadow: var(--kb-shadow);
+}
+
+.header.compact .header-body {
+  padding: 12px 24px;
+}
+
+.header.compact .header-body.kb-mobile-pad {
+  padding-left: 56px;
+}
+
+.search-btn {
+  margin-right: 8px;
+  color: var(--kb-muted);
+}
+
+.header-breadcrumb {
+  padding: 8px 24px 12px;
+  border-top: 1px solid var(--kb-border);
+  background: var(--kb-surface-2);
 }
 
 .row-container {
@@ -238,10 +270,12 @@ export default {
   gap: 12px;
 }
 
-.header-breadcrumb {
-  padding: 8px 24px 12px;
-  border-top: 1px solid var(--kb-border);
-  background: rgba(6, 10, 18, 0.4);
+.header.compact .header-breadcrumb {
+  display: none;
+}
+
+.header.compact .title {
+  display: none;
 }
 
 .header-breadcrumb h3 {
@@ -295,7 +329,7 @@ export default {
 }
 
 .subtitle {
-  color: var(--kb-violet);
+  color: var(--kb-accent-dim);
 }
 
 .name {

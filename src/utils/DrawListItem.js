@@ -1,13 +1,20 @@
 import { swapCardExternal, swapCardInternal } from "../helpers/ApiHelper";
-import { formatIssueLabel } from "../helpers/jiraDefaults";
 import { __dnd, __konva } from "./DrawCanvas";
+import { createCardGroup, CARD_GAP, CARD_HEIGHT } from "./DrawCardFace";
 
 const isLite = import.meta.env.VITE_LITE_VERSION === "ON";
 
-export function searchIntersection(r2) {
-  const allRects = __konva.stage.find("Rect");
+function isCardNode(node) {
+  return !!node?.attrs?.id && node.attrs.id.includes("CARD-");
+}
 
-  const listRects = allRects.filter(
+export function searchIntersection(r2) {
+  const allNodes = [
+    ...__konva.stage.find("Rect"),
+    ...__konva.stage.find("Group"),
+  ];
+
+  const listRects = allNodes.filter(
     (rect) =>
       !!rect.attrs.id &&
       (rect.attrs.id.includes("LIST-") || rect.attrs.id.includes("ADD-MORE")) &&
@@ -15,12 +22,7 @@ export function searchIntersection(r2) {
       !rect.attrs.id.includes("TITLE-RECT")
   );
 
-  const cardRects = allRects.filter(
-    (rect) =>
-      !!rect.attrs.id &&
-      rect.attrs.id.includes("LIST-") &&
-      rect.attrs.id.includes("CARD-")
-  );
+  const cardNodes = allNodes.filter(isCardNode);
 
   const collidedLists = listRects.filter((r1) => {
     if (
@@ -37,15 +39,15 @@ export function searchIntersection(r2) {
     }
   });
 
-  const collidedItems = cardRects.filter((r1) => {
+  const collidedItems = cardNodes.filter((r1) => {
     if (
       r1 !== r2 &&
       !r2.attrs.id.includes(r1.attrs.id) &&
       !(
         r2.position().x > r1.x() + r1.width() - 200 ||
         r2.position().x + r2.width() - 200 < r1.x() ||
-        r2.position().y > r1.y() + r1.height() - 100 ||
-        r2.position().y + r2.height() - 100 < r1.y()
+        r2.position().y > r1.y() + r1.height() - CARD_HEIGHT ||
+        r2.position().y + r2.height() - CARD_HEIGHT < r1.y()
       )
     ) {
       return true;
@@ -56,55 +58,36 @@ export function searchIntersection(r2) {
 }
 
 export function initListItem(list, x, e) {
-  const standardRect = this.drawFns().getCard({ x });
-  const standardText = this.drawFns().getText({ x });
-
   const kanbanList = isLite
     ? this.$store.getters.kanbanList
     : this.$store?.api?.board?.kanbanList;
   let yCount = 70;
 
-  const existingCards = [
-    ...__konva.stage.find("Rect"),
-    ...__konva.stage.find("Text"),
-  ].filter(
+  const existingCards = __konva.stage.find("Group").filter(
     (v) =>
       !!v.attrs.id &&
-      (v.attrs.id.includes(`LIST-${list?.id}-CARD-`) ||
-        v.attrs.id.includes(`LIST-${list?.id}-TEXT-`))
+      v.attrs.id.includes(`LIST-${list?.id}-CARD-`)
   );
 
   existingCards.forEach((v) => v.destroy());
 
   list.children.forEach((card) => {
-    const cardRect = standardRect.clone();
-    cardRect.id(`LIST-${list?.id}-CARD-${card?.id}`);
-    cardRect.attrs.cardDetails = card;
-    cardRect.attrs.parentList = list;
-    cardRect.y(yCount);
+    const group = createCardGroup({
+      list,
+      card,
+      x,
+      y: yCount,
+      vm: this,
+    });
 
-    const titleText = standardText.clone();
-    titleText.id(`LIST-${list?.id}-TEXT-${card?.id}`);
-    titleText.text(formatIssueLabel(card));
-
-    titleText.attrs.cardDetails = card;
-    titleText.attrs.parentList = list;
-    titleText.y(yCount + 10);
-
-    titleText.on("dragmove", (e) => {
-      cardRect.moveToTop();
-      e.target.moveToTop();
-
-      const { x, y } = e.target.position();
-      cardRect.x(x - 20);
-      cardRect.y(y - 10);
-
-      const { list, item } = searchIntersection(e.target);
-      __dnd.list = list;
+    group.on("dragmove", (ev) => {
+      group.moveToTop();
+      const { list: dragList, item } = searchIntersection(group);
+      __dnd.list = dragList;
       __dnd.item = item;
     });
 
-    titleText.on("dragend", async (e) => {
+    group.on("dragend", async (ev) => {
       const dragOverList = __dnd.list;
       const dragOverItem = __dnd.item;
       const parentList = kanbanList.find((data) => data?.id === list?.id);
@@ -163,7 +146,7 @@ export function initListItem(list, x, e) {
               (v) => v.id !== card.id
             );
           }
-          
+
           if (foundItemIndex > -1) {
             foundList.children.splice(foundItemIndex, 0, card);
           } else {
@@ -186,8 +169,7 @@ export function initListItem(list, x, e) {
             };
           }
 
-          cardRect.destroy();
-          titleText.destroy();
+          group.destroy();
         }
       }
 
@@ -196,9 +178,8 @@ export function initListItem(list, x, e) {
       __dnd.item = null;
     });
 
-    yCount = yCount + 190;
+    yCount = yCount + CARD_GAP;
 
-    __konva.layer.add(cardRect);
-    __konva.layer.add(titleText);
+    __konva.layer.add(group);
   });
 }

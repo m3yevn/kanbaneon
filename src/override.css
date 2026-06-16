@@ -1,3 +1,97 @@
+/* Ant Design Vue — Kanbaneon custom layer (lime · white SaaS) */
+
+.ant-btn {
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.ant-btn-primary:not(:disabled):hover {
+  background: var(--kb-accent) !important;
+  border-color: var(--kb-accent) !important;
+}
+
+.ant-btn-primary:not(:disabled):active {
+  background: var(--kb-accent-dim) !important;
+  border-color: var(--kb-accent-dim) !important;
+}
+
+.ant-btn-default:not(:disabled):hover {
+  border-color: var(--kb-accent);
+  color: var(--kb-accent-dim);
+}
+
+.ant-btn-lg {
+  height: 44px;
+  padding-inline: 20px;
+  font-size: 0.95rem;
+}
+
+.ant-btn:focus-visible {
+  outline: 2px solid var(--kb-accent);
+  outline-offset: 2px;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-password,
+.ant-select-selector,
+.ant-picker {
+  min-height: 36px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-input:focus,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused {
+  border-color: var(--kb-accent) !important;
+  box-shadow: 0 0 0 2px var(--kb-accent-soft) !important;
+}
+
+.ant-select-dropdown,
+.ant-dropdown-menu {
+  border-radius: 10px;
+  box-shadow: var(--kb-shadow-glow);
+  border: 1px solid var(--kb-border);
+}
+
+.ant-dropdown-menu-item:hover,
+.ant-select-item-option-active {
+  background: var(--kb-accent-soft) !important;
+}
+
+.ant-tag {
+  border-radius: 6px;
+  font-weight: 500;
+  border: none;
+}
+
+.ant-modal-content {
+  box-shadow: 0 8px 32px rgba(9, 30, 66, 0.15);
+}
+
+.ant-drawer-header-title {
+  font-weight: 600;
+}
+
+.ant-menu-item-selected {
+  background: var(--kb-accent-soft) !important;
+  color: var(--kb-accent-dim) !important;
+}
+
+.ant-tooltip-inner {
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.ant-skeleton-content .ant-skeleton-title,
+.ant-skeleton-content .ant-skeleton-paragraph > li {
+  background: linear-gradient(90deg, var(--kb-surface-2) 25%, #eef2f6 50%, var(--kb-surface-2) 75%);
+}
+
 .ant-popover {
   position: fixed;
 }
@@ -7,11 +101,11 @@
 }
 
 .avatar {
-  background: linear-gradient(135deg, var(--kb-accent), var(--kb-violet));
+  background: linear-gradient(135deg, var(--kb-accent), #a3e635);
   border-radius: 50%;
-  height: 44px;
-  width: 44px;
-  border: 2px solid var(--kb-border-strong);
+  height: 40px;
+  width: 40px;
+  border: 2px solid var(--kb-border);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,16 +115,16 @@
 }
 
 .avatar:hover {
-  box-shadow: 0 0 20px var(--kb-accent-soft);
-  transform: scale(1.04);
+  box-shadow: var(--kb-shadow-glow);
+  transform: scale(1.03);
 }
 
 .mini-avatar {
-  background: linear-gradient(135deg, var(--kb-accent), var(--kb-violet));
+  background: linear-gradient(135deg, var(--kb-accent), #a3e635);
   border-radius: 50%;
   height: 24px;
   width: 24px;
-  border: 1px solid var(--kb-border-strong);
+  border: 1px solid var(--kb-border);
   margin-left: 20px;
   display: flex;
   justify-content: center;
@@ -47,4 +141,14 @@
 
 .card .ant-card-body {
   flex-direction: column;
+}
+
+.board-card.ant-card {
+  border-radius: var(--kb-radius-lg) !important;
+  overflow: hidden;
+}
+
+.board-card.ant-card:hover {
+  border-color: var(--kb-border-strong) !important;
+  box-shadow: var(--kb-shadow-glow) !important;
 }

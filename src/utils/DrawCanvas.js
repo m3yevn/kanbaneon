@@ -57,14 +57,15 @@ export function initCanvas() {
   const calculatedChildren =
     !!largestList && Math.max(...kanbanList.map((v) => v.children?.length));
   const largestChildren = calculatedChildren >= 2 ? calculatedChildren : 2;
+  const rowHeight = 220;
 
   __konva.stage = new Konva.Stage({
     container: "kanbaneon-canvas",
     width: largestList > 4 ? width + (largestList - 4) * 295 : width,
     height:
       largestChildren > 3
-        ? largestChildren * 12.25 + largestChildren * 180 + 60
-        : largestChildren * 280,
+        ? largestChildren * rowHeight + 60
+        : largestChildren * rowHeight,
     x: 0,
     y: 0,
   });

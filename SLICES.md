@@ -20,12 +20,15 @@ Vue 3 + Konva kanban frontend, evolving into a lightweight Jira clone.
 | **Settings** | Organization shortcut, account, notifications |
 | **Docs page** | `/docs` — quick start, concepts, API link |
 | **Evolution Phase 1** | Lime light theme · `EVOLUTION.md` · canvas palette |
+| **Workspace rebirth (2)** | ⌘K palette · card metadata · auth split · mobile shell · legal |
 
 ## Next slices
 
 | # | Slice | Scope |
 |---|-------|-------|
-| 12 | **Board settings** | Edit columns, project key, permissions |
+| 14 | **Board settings** | Edit columns, project key, permissions |
+| 15 | **Favorites UI** | Star on project cards |
+| 16 | **Assignee picker** | Issue drawer → card face sync |
 
 ## Routes
 

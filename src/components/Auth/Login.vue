@@ -1,19 +1,17 @@
 <template>
-  <div class="wrapper">
-    <form @submit.prevent="isLite ? login($event) : loginApi($event)" autocomplete="off">
-      <a-card class="card">
-        <h2 class="title">
-          KAN<span class="subtitle">BANEON</span>
-          <span class="version" v-if="isLite"> Lite</span>
-        </h2>
+  <AuthLayout>
+    <form @submit.prevent="isLite ? login($event) : loginApi($event)" autocomplete="off" class="auth-form">
+      <a-card class="card" :bordered="false">
+        <h2 class="title">Welcome back</h2>
+        <p class="subtitle-text">Sign in to your workspace</p>
         <div class="input-wrapper">
-          <a-input v-model:value="username" placeholder="Enter your username or email" autocomplete="new-username">
+          <a-input v-model:value="username" placeholder="Username or email" autocomplete="username">
             <template #prefix>
               <UserOutlined class="site-form-item-icon" />
             </template>
           </a-input>
           <label class="error-label">{{ error.username }}&nbsp;</label>
-          <a-input-password v-if="!isLite" v-model:value="password" placeholder="Enter your password" type="password" autocomplete="new-password">
+          <a-input-password v-if="!isLite" v-model:value="password" placeholder="Password" autocomplete="current-password">
             <template #prefix>
               <LockOutlined class="site-form-item-icon" />
             </template>
@@ -24,21 +22,19 @@
           </a-input-password>
           <label v-if="!isLite" class="error-label">{{ error.password }}&nbsp;</label>
         </div>
-        <p class="forgot-link"><router-link to="forgot?type=password">Forgot your username or password?</router-link></p>
+        <p class="forgot-link"><router-link to="forgot?type=password">Forgot username or password?</router-link></p>
         <input type="submit" hidden />
         <a-button :disabled="isLoading" type="primary" size="large" block
           @click="isLite ? login($event) : loginApi($event)">
           <a-spin v-if="isLoading" />
-          Login</a-button>
+          Sign in</a-button>
         <div class="form-footer" v-if="!isLite">
-          Don't have an account?
-          <span>
-            <router-link to="/signup">Sign Up Here</router-link>
-          </span>
+          No account?
+          <router-link to="/signup">Create one</router-link>
         </div>
       </a-card>
     </form>
-  </div>
+  </AuthLayout>
 </template>
 
 <script lang="ts">
@@ -47,6 +43,7 @@ import { INDEXED_DB, browserDB } from "../../helpers/IndexedDbHelper";
 import { getExistingUser } from "../../store";
 import { login } from "../../helpers/ApiHelper";
 import { EyeTwoTone, EyeInvisibleOutlined, UserOutlined, LockOutlined } from '@ant-design/icons-vue';
+import AuthLayout from "./AuthLayout.vue";
 
 export default {
   data: () => {
@@ -60,7 +57,7 @@ export default {
     };
   },
   components: {
-    EyeTwoTone, EyeInvisibleOutlined, UserOutlined, LockOutlined
+    EyeTwoTone, EyeInvisibleOutlined, UserOutlined, LockOutlined, AuthLayout
   },
   methods: {
     async login(e) {
@@ -112,37 +109,32 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 24px;
-}
-
-.title {
-  display: inline;
-  font-size: 1.75rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--kb-accent);
-}
-
-.subtitle {
-  color: var(--kb-violet);
-}
-
-.version {
-  font-size: 14px;
-  color: var(--kb-muted);
-}
-
-.card {
+.auth-form {
   width: min(420px, 92vw);
 }
 
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--kb-text);
+}
+
+.subtitle-text {
+  color: var(--kb-muted);
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+}
+
+.card {
+  width: 100%;
+  box-shadow: var(--kb-shadow);
+  border: 1px solid var(--kb-border) !important;
+  border-radius: var(--kb-radius-lg) !important;
+}
+
 .input-wrapper {
-  margin: 20px 0;
+  margin: 0 0 8px;
   width: 100%;
 }
 
@@ -154,14 +146,7 @@ export default {
 
 .form-footer a {
   color: var(--kb-accent);
-}
-
-a {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
+  margin-left: 4px;
 }
 
 .forgot-link {

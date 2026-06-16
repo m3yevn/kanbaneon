@@ -1,4 +1,14 @@
 <template>
+  <div class="teams-hub">
+    <header class="hub-header">
+      <div>
+        <h1>Teams</h1>
+        <p class="hub-sub">Collaborate with the people you ship with.</p>
+      </div>
+      <a-button type="primary" size="large" @click="handleCreateNewTeam">
+        <PlusIcon /> New team
+      </a-button>
+    </header>
   <div class="container">
     <a-spin :spinning="state.isLoading" tip="Loading..." size="large">
       <a-row v-if="state.teams?.length" :gutter="16">
@@ -172,6 +182,7 @@
       </a-button>
     </template>
   </a-modal>
+  </div>
   </div>
 </template>
 
@@ -392,5 +403,35 @@ const handleSearchMembers = async () => {
   margin-top: 10px;
   height: 160px;
   overflow: auto;
+}
+
+.teams-hub {
+  padding: 24px 24px 0;
+}
+
+.hub-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.hub-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.hub-sub {
+  margin: 0;
+  color: var(--kb-muted);
+}
+
+.container .card {
+  border-radius: var(--kb-radius-lg);
+  border: 1px solid var(--kb-border);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 </style>

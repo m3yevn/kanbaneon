@@ -1,15 +1,17 @@
 import Konva from "konva";
 import { store } from "../store";
 import { CANVAS } from "../theme/canvasTheme.js";
+import { CARD_HEIGHT, CARD_WIDTH } from "./DrawCardFace.js";
 
+/** Legacy card rect — kept for compatibility; board uses DrawCardFace groups. */
 export default function getCard({ x }) {
   const card = new Konva.Rect({
     x: x + 10,
     fill: CANVAS.cardFill,
     stroke: CANVAS.cardStroke,
     strokeWidth: 1,
-    height: 180,
-    width: 275,
+    height: CARD_HEIGHT,
+    width: CARD_WIDTH,
     cornerRadius: 10,
     shadowColor: "#000",
     shadowBlur: 12,

@@ -1,4 +1,14 @@
 <template>
+  <div class="orgs-hub">
+    <header class="hub-header">
+      <div>
+        <h1>Organizations</h1>
+        <p class="hub-sub">Workspaces that group projects and teams.</p>
+      </div>
+      <a-button type="primary" size="large" @click="openCreate">
+        <PlusIcon /> New organization
+      </a-button>
+    </header>
   <div class="container">
     <a-spin :spinning="state.isLoading" tip="Loading..." size="large">
       <a-row v-if="state.organizations?.length" :gutter="16">
@@ -29,6 +39,7 @@
       <a-form-item label="Description"><a-textarea v-model:value="state.form.description" :rows="4" /></a-form-item>
     </a-form>
   </a-modal>
+  </div>
 </template>
 
 <script setup>
@@ -78,11 +89,75 @@ const create = async () => {
 </script>
 
 <style scoped>
+.orgs-hub {
+  padding: 24px 24px 0;
+}
+
+.hub-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.hub-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.hub-sub {
+  margin: 0;
+  color: var(--kb-muted);
+}
+
 .col { padding-bottom: 16px; }
-.add-new-btn-card { height: 307px; border: 2px dashed #dbdbdb; background: rgba(73,73,73,0.5); display: flex; justify-content: center; align-items: center; }
-.add-new-btn { font-size: 18px; height: 46px; padding: 20px; }
-.container { padding: 16px; min-height: 70vh; margin-top: 140px; background: #1a237e; }
-.wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh; }
-.card { cursor: pointer; font-weight: bold; }
-.org-slug { color: #90caf9; font-size: 12px; margin-bottom: 8px; }
+
+.add-new-btn-card {
+  min-height: 200px;
+  border: 2px dashed var(--kb-border-strong) !important;
+  background: var(--kb-surface-2) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--kb-radius-lg);
+}
+
+.add-new-btn { font-size: 1rem; }
+
+.container {
+  padding: 0 0 32px;
+  min-height: 50vh;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  gap: 16px;
+  text-align: center;
+}
+
+.card {
+  cursor: pointer;
+  border-radius: var(--kb-radius-lg);
+  border: 1px solid var(--kb-border);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--kb-shadow);
+}
+
+.org-slug {
+  color: var(--kb-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
 </style>

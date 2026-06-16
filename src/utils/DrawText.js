@@ -1,6 +1,7 @@
 import Konva from "konva";
 import { store } from "../store";
 import { CANVAS } from "../theme/canvasTheme.js";
+import { CARD_HEIGHT, CARD_WIDTH } from "./DrawCardFace.js";
 
 export default function getText({ x }) {
   const text = new Konva.Text({
@@ -8,8 +9,8 @@ export default function getText({ x }) {
     fontSize: 18,
     fill: CANVAS.cardText,
     x: x + 20,
-    width: 265,
-    height: 175,
+    width: CARD_WIDTH - 10,
+    height: CARD_HEIGHT - 5,
     draggable: true,
   });
 
