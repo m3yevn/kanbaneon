@@ -1,14 +1,14 @@
-/** Shared Konva canvas palette — keep in sync with src/theme.css */
+/** Shared Konva canvas palette — light board (lime accent) */
 export const CANVAS = {
-  stageBg: "#080d18",
-  columnFill: "rgba(26, 35, 50, 0.85)",
-  columnHeader: "#1e293b",
-  columnHeaderText: "#e2e8f0",
-  cardFill: "#243044",
-  cardStroke: "rgba(34, 211, 238, 0.2)",
-  cardText: "#f1f5f9",
-  addBtn: "#22d3ee",
-  addListFill: "rgba(34, 211, 238, 0.08)",
-  addListStroke: "rgba(34, 211, 238, 0.4)",
-  addListText: "#94a3b8",
+  stageBg: "#f4f5f7",
+  columnFill: "#ffffff",
+  columnHeader: "#f1f5f9",
+  columnHeaderText: "#172b4d",
+  cardFill: "#ffffff",
+  cardStroke: "rgba(101, 163, 13, 0.25)",
+  cardText: "#172b4d",
+  addBtn: "#65a30d",
+  addListFill: "rgba(101, 163, 13, 0.08)",
+  addListStroke: "rgba(101, 163, 13, 0.4)",
+  addListText: "#5e6c84",
 };

@@ -12,15 +12,15 @@ import AppHeader from "./components/Shared/Header.vue";
 import MobileMessage from "./components/Views/MobileMessage.vue";
 
 const antTheme = {
-  algorithm: theme.darkAlgorithm,
+  algorithm: theme.defaultAlgorithm,
   token: {
-    colorPrimary: "#22d3ee",
-    colorBgContainer: "#111827",
-    colorBgElevated: "#1a2332",
-    colorBorder: "rgba(148, 163, 184, 0.14)",
-    colorText: "#f1f5f9",
-    colorTextSecondary: "#94a3b8",
-    borderRadius: 10,
+    colorPrimary: "#65a30d",
+    colorBgContainer: "#ffffff",
+    colorBgElevated: "#ffffff",
+    colorBorder: "rgba(9, 30, 66, 0.12)",
+    colorText: "#172b4d",
+    colorTextSecondary: "#5e6c84",
+    borderRadius: 8,
     fontFamily: "'Inter', system-ui, sans-serif",
   },
 };
