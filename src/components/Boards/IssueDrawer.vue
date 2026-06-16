@@ -39,6 +39,18 @@
       </template>
     </a-list>
 
+    <a-divider>Activity</a-divider>
+    <a-list :data-source="activity" size="small">
+      <template #renderItem="{ item }">
+        <a-list-item>
+          <a-list-item-meta
+            :title="`${item.username} · ${formatActivity(item)}`"
+            :description="formatDate(item.createdAt)"
+          />
+        </a-list-item>
+      </template>
+    </a-list>
+
     <a-divider>Comments</a-divider>
     <a-list :data-source="comments" size="small">
       <template #renderItem="{ item }">
@@ -69,6 +81,7 @@ import {
   editCard,
   getIssueComments,
   addIssueComment,
+  getIssueActivity,
   getEpics,
   linkIssueToEpic,
   getEpicChildren,
@@ -93,6 +106,7 @@ const form = reactive({
   parentEpicKey: "",
 });
 const comments = ref([]);
+const activity = ref([]);
 const epicOptions = ref([]);
 const epicChildren = ref([]);
 const newComment = ref("");
@@ -104,10 +118,31 @@ const priorityOptions = PRIORITIES.map((p) => ({ value: p.value, label: p.label 
 
 const formatDate = (d) => (d ? new Date(d).toLocaleString() : "");
 
+const formatActivity = (item) => {
+  switch (item.type) {
+    case "issue_created":
+      return "created this issue";
+    case "field_changed":
+      return `changed ${item.field} from "${item.from ?? "—"}" to "${item.to ?? "—"}"`;
+    case "comment_added":
+      return "added a comment";
+    case "epic_linked":
+      return `linked to epic ${item.meta?.epicKey || ""}`.trim();
+    default:
+      return item.type?.replace(/_/g, " ") || "updated";
+  }
+};
+
 const loadComments = async () => {
   if (!props.boardId || !props.listId || !props.issue?.id) return;
   const result = await getIssueComments(props.boardId, props.listId, props.issue.id);
   comments.value = result?.comments ?? [];
+};
+
+const loadActivity = async () => {
+  if (!props.boardId || !props.listId || !props.issue?.id) return;
+  const result = await getIssueActivity(props.boardId, props.listId, props.issue.id);
+  activity.value = result?.activity ?? [];
 };
 
 watch(
@@ -121,6 +156,7 @@ watch(
     form.epicId = issue.epicId || undefined;
     form.parentEpicKey = issue.parentEpicKey || "";
     loadComments();
+    loadActivity();
     const epicsResult = await getEpics(props.boardId);
     epicOptions.value = (epicsResult?.epics ?? []).map((e) => ({
       value: e.id,
@@ -154,6 +190,7 @@ const save = async () => {
   }
   if (result?.board) {
     emit("updated", result.board);
+    await loadActivity();
   }
   saving.value = false;
 };
@@ -171,6 +208,7 @@ const postComment = async () => {
     emit("updated", result.board);
     newComment.value = "";
     comments.value = result.card?.comments ?? comments.value;
+    await loadActivity();
   }
   commenting.value = false;
 };

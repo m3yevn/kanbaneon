@@ -1,14 +1,20 @@
 import Konva from "konva";
 import { store } from "../store";
+import { CANVAS } from "../theme/canvasTheme.js";
 
 export default function getCard({ x }) {
   const card = new Konva.Rect({
     x: x + 10,
-    fill: "#35495e",
+    fill: CANVAS.cardFill,
+    stroke: CANVAS.cardStroke,
+    strokeWidth: 1,
     height: 180,
     width: 275,
-    cornerRadius: 8,
-    shadowBlur: 1,
+    cornerRadius: 10,
+    shadowColor: "#000",
+    shadowBlur: 12,
+    shadowOpacity: 0.35,
+    shadowOffsetY: 4,
     draggable: true,
   });
 

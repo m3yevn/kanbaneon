@@ -1,18 +1,36 @@
 <template>
-  <AppHeader v-if="$store.state.user.isLoggedIn && largeScreen && $route.path !== '/'" />
-  <router-view v-if="largeScreen" />
-  <MobileMessage v-if="!largeScreen" />
+  <a-config-provider :theme="antTheme">
+    <AppHeader v-if="$store.state.user.isLoggedIn && largeScreen && $route.path !== '/'" />
+    <router-view v-if="largeScreen" />
+    <MobileMessage v-if="!largeScreen" />
+  </a-config-provider>
 </template>
 
 <script>
+import { theme } from "ant-design-vue";
 import AppHeader from "./components/Shared/Header.vue";
 import MobileMessage from "./components/Views/MobileMessage.vue";
+
+const antTheme = {
+  algorithm: theme.darkAlgorithm,
+  token: {
+    colorPrimary: "#22d3ee",
+    colorBgContainer: "#111827",
+    colorBgElevated: "#1a2332",
+    colorBorder: "rgba(148, 163, 184, 0.14)",
+    colorText: "#f1f5f9",
+    colorTextSecondary: "#94a3b8",
+    borderRadius: 10,
+    fontFamily: "'Inter', system-ui, sans-serif",
+  },
+};
 
 export default {
   data() {
     return {
       largeScreen: window.matchMedia("(min-width:1024px)").matches,
       resizeListener: null,
+      antTheme,
     };
   },
   components: {
@@ -43,21 +61,3 @@ export default {
   },
 };
 </script>
-
-<style>
-body {
-  background-color: #42b883 !important;
-  height: 75% !important;
-}
-
-.ant-card-body {
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.error-label {
-  color: rgb(243, 67, 67);
-}
-</style>

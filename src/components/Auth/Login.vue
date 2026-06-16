@@ -116,58 +116,61 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 24px;
 }
 
 .title {
   display: inline;
-  font-size: 32px;
-  font-weight: bold;
-  color: #42b883;
-  cursor: pointer;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--kb-accent);
 }
 
 .subtitle {
-  color: #35495e;
+  color: var(--kb-violet);
 }
 
 .version {
   font-size: 14px;
+  color: var(--kb-muted);
 }
 
 .card {
-  width: 25vw;
+  width: min(420px, 92vw);
 }
 
 .input-wrapper {
-  margin: 16px 0px;
+  margin: 20px 0;
   width: 100%;
-}
-
-
-.ant-input {
-  padding: 8px 8px;
-}
-
-.ant-input-affix-wrapper, .ant-input-password {
-  padding: 8px 8px;
 }
 
 .form-footer {
   padding-top: 20px;
+  color: var(--kb-muted);
+  font-size: 0.9rem;
+}
+
+.form-footer a {
+  color: var(--kb-accent);
 }
 
 a {
+  text-decoration: none;
+}
+
+a:hover {
   text-decoration: underline;
 }
 
 .forgot-link {
-  margin-left: 6vw;
+  text-align: right;
+  margin: 8px 0 16px;
+  font-size: 0.85rem;
 }
-</style>
 
-<style>
-.card .ant-card-body {
-  flex-direction: column;
+.forgot-link a {
+  color: var(--kb-muted);
 }
 </style>

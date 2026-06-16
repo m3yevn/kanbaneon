@@ -1,11 +1,12 @@
 import Konva from "konva";
 import { store } from "../store";
+import { CANVAS } from "../theme/canvasTheme.js";
 
 export default function getText({ x }) {
   const text = new Konva.Text({
     text: "",
     fontSize: 18,
-    fill: "white",
+    fill: CANVAS.cardText,
     x: x + 20,
     width: 265,
     height: 175,

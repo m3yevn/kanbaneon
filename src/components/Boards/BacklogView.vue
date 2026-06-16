@@ -1,5 +1,5 @@
 <template>
-  <div class="backlog-view">
+  <div class="backlog-view kb-panel">
     <div class="toolbar">
       <h2>Backlog</h2>
       <a-button type="primary" @click="emit('create')">Create issue</a-button>
@@ -103,14 +103,20 @@ defineExpose({ refresh });
 </script>
 
 <style scoped>
-.backlog-view { padding: 16px; margin-top: 180px; max-width: 960px; margin-left: auto; margin-right: auto; }
+.backlog-view {
+  margin: calc(var(--kb-header-h) + 56px) auto 32px;
+  max-width: 960px;
+}
 .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .issue-list { display: flex; flex-direction: column; gap: 8px; }
 .issue-row {
   display: flex; align-items: center; gap: 12px;
-  background: #fff; padding: 12px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  padding: 12px 14px; border-radius: var(--kb-radius);
+  background: var(--kb-surface-2); border: 1px solid var(--kb-border);
+  transition: border-color 0.2s, transform 0.15s;
 }
+.issue-row:hover { border-color: var(--kb-border-strong); transform: translateY(-1px); }
 .issue-main { flex: 1; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-.priority { color: #888; font-size: 12px; text-transform: capitalize; }
+.priority { color: var(--kb-muted); font-size: 12px; text-transform: capitalize; }
 .rank-btns { display: flex; flex-direction: column; gap: 2px; }
 </style>

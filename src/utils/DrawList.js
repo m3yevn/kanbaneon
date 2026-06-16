@@ -1,5 +1,6 @@
 import { __konva } from "./DrawCanvas";
 import { store } from "../store";
+import { CANVAS } from "../theme/canvasTheme.js";
 
 const isLite = import.meta.env.VITE_LITE_VERSION === "ON";
 
@@ -21,10 +22,10 @@ export function initList() {
 
   const standardTitleRect = new Konva.Rect({
     y: 10,
-    fill: "#F0F0F0",
+    fill: CANVAS.columnHeader,
     height: 50,
     width: 295,
-    cornerRadius: [8, 8, 0, 0],
+    cornerRadius: [10, 10, 0, 0],
   });
 
   const standardText = this.drawFns().getAddText();
@@ -83,17 +84,17 @@ export function initList() {
   addMoreRect.height(240);
   addMoreRect.draggable(false);
   addMoreRect.x(xCount);
-  addMoreRect.fill("rgba(255,255,255,0.3)");
-  addMoreRect.stroke("white");
-  addMoreRect.dash([5, 5]);
+  addMoreRect.fill(CANVAS.addListFill);
+  addMoreRect.stroke(CANVAS.addListStroke);
+  addMoreRect.dash([6, 6]);
   addMoreRect.id("ADD-MORE-RECT");
 
   const addMoreText = standardText.clone();
   addMoreText.draggable(false);
-  addMoreText.text(`Click here to add more list`);
+  addMoreText.text(`+ Add column`);
   addMoreText.x(xCount + 10);
-  addMoreText.fontSize(15);
-  addMoreText.fill("white");
+  addMoreText.fontSize(14);
+  addMoreText.fill(CANVAS.addListText);
   addMoreText.id("ADD-MORE-TEXT");
 
   __konva.layer.add(addMoreRect);

@@ -5,6 +5,7 @@
         <a-radio-button value="board">Board</a-radio-button>
         <a-radio-button value="backlog">Backlog</a-radio-button>
         <a-radio-button value="sprints">Sprints</a-radio-button>
+        <a-radio-button value="epics">Epics</a-radio-button>
       </a-radio-group>
       <span v-if="projectKey" class="project-key">{{ projectKey }}</span>
       <a-button type="link" class="search-toggle" @click="showSearch = !showSearch">
@@ -31,6 +32,13 @@
       ref="sprintRef"
       :board-id="boardId"
       @open-issue="openIssueFromSprint"
+      @board-updated="onBoardUpdated"
+    />
+    <EpicBoardView
+      v-if="viewMode === 'epics' && !isLite"
+      ref="epicRef"
+      :board-id="boardId"
+      @open-issue="openIssueDrawer"
       @board-updated="onBoardUpdated"
     />
 
@@ -158,6 +166,7 @@ import Watchers from "./Watchers.vue";
 import IssueDrawer from "./IssueDrawer.vue";
 import BacklogView from "./BacklogView.vue";
 import SprintPlanning from "./SprintPlanning.vue";
+import EpicBoardView from "./EpicBoardView.vue";
 import IssueSearchPanel from "./IssueSearchPanel.vue";
 
 export default {
@@ -210,6 +219,7 @@ export default {
     IssueDrawer,
     BacklogView,
     SprintPlanning,
+    EpicBoardView,
     IssueSearchPanel,
   },
   computed: {
@@ -255,6 +265,12 @@ export default {
         issue,
         listId: listId || issue?.listId,
       };
+      if (!this.isLite && issue?.issueKey) {
+        const target = `/boards/${this.boardId}/issues/${issue.issueKey}`;
+        if (this.$route.path !== target) {
+          this.$router.push(target);
+        }
+      }
     },
     openIssueFromSprint(issue) {
       this.openIssueDrawer(issue, issue.listId);
@@ -264,6 +280,34 @@ export default {
     },
     closeIssueDrawer() {
       this.issueDrawer = { visible: false, issue: null, listId: null };
+      if (!this.isLite && this.$route.params.issueKey) {
+        this.$router.replace(`/boards/${this.boardId}`);
+      }
+    },
+    findIssueByKey(issueKey) {
+      const lists = this.$store.api?.board?.kanbanList || [];
+      for (const list of lists) {
+        const issue = list.children.find((c) => c.issueKey === issueKey);
+        if (issue) {
+          return { issue: { ...issue, listId: list.id }, listId: list.id };
+        }
+      }
+      return null;
+    },
+    openIssueFromRoute() {
+      const issueKey = this.$route.params.issueKey;
+      if (!issueKey) return;
+      const found = this.findIssueByKey(issueKey);
+      if (found) {
+        this.issueDrawer = {
+          visible: true,
+          issue: found.issue,
+          listId: found.listId,
+        };
+      } else {
+        message.warning(`Issue ${issueKey} not found`);
+        this.$router.replace(`/boards/${this.boardId}`);
+      }
     },
     async handleDeleteFromDrawer() {
       const { issue, listId } = this.issueDrawer;
@@ -482,6 +526,7 @@ export default {
             board: data?.board
           };
         }
+        this.openIssueFromRoute();
       } catch (ex) {
         console.error(ex);
         return this.$router.push("/");
@@ -490,6 +535,17 @@ export default {
         this.isLoading = false;
       }
     }
+  },
+  watch: {
+    "$route.params.issueKey"(key) {
+      if (!key) {
+        this.issueDrawer = { visible: false, issue: null, listId: null };
+        return;
+      }
+      if (this.$store.api?.board) {
+        this.openIssueFromRoute();
+      }
+    },
   },
   async mounted() {
     this.drawFns().initCanvas();
@@ -509,68 +565,60 @@ export default {
 </script>
 
 <style scoped>
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #42b883;
-}
-
-.subtitle {
-  color: #35495e;
-}
-
-.loading-wrapper {
-  width: 100vw;
-  height: 60vh;
-  font-size: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .canvas-wrapper {
-  margin-top: 140px;
+  margin-top: calc(var(--kb-header-h) + 56px);
   width: 100%;
+  padding: 0 16px 32px;
 }
 
 .view-tabs {
   position: fixed;
-  top: 120px;
+  top: var(--kb-header-h);
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: 50;
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 8px 24px;
-  background: rgba(26, 35, 126, 0.95);
+  padding: 10px 24px;
+  background: var(--kb-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--kb-border);
 }
 
 .project-key {
-  color: #90caf9;
+  color: var(--kb-accent);
   font-weight: 600;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--kb-accent-soft);
+  border: 1px solid var(--kb-border-strong);
 }
-.search-toggle { color: #90caf9 !important; margin-left: auto; }
+
+.search-toggle {
+  color: var(--kb-muted) !important;
+  margin-left: auto;
+}
+
+.search-toggle:hover {
+  color: var(--kb-accent) !important;
+}
 
 .edit-card-textarea {
   margin-bottom: 10px;
 }
 
-.btn-danger {
-  background: #ef180c;
-  color: white;
-}
-
 .watchers {
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
-  color: #42b883;
+  color: var(--kb-accent);
   width: fit-content;
+  font-size: 0.9rem;
 }
-</style>
 
-<style>
-.konvajs-content {
-  background-color: #42b883;
+.watchers:hover {
+  text-decoration: underline;
 }
 </style>

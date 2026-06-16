@@ -162,35 +162,42 @@ export default {
 }
 
 .col {
-  padding-bottom: 16px;
+  padding-bottom: 20px;
 }
 
 .add-new-btn-card {
-  height: 307px;
-  border: 2px dashed rgb(219, 219, 219);
-  background: rgba(73, 73, 73, 0.5);
-
+  min-height: 280px;
+  border: 2px dashed var(--kb-border-strong) !important;
+  background: var(--kb-accent-soft) !important;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+}
+
+.add-new-btn-card:hover {
+  border-color: var(--kb-accent) !important;
+  box-shadow: var(--kb-shadow-glow) !important;
 }
 
 .add-new-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 18px;
-  font-weight: 500;
-  height: 46px;
-  padding: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 10px;
 }
 
 .container {
-  padding: 16px;
-  min-height: 70vh;
-  margin-top: 140px;
-  background: #42b883;
+  padding: 24px;
+  min-height: calc(100vh - var(--kb-header-h));
+  margin-top: var(--kb-header-h);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .wrapper {
@@ -198,17 +205,19 @@ export default {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 80vh;
+  gap: 24px;
+  min-height: 60vh;
 }
 
 .card {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+  border-color: var(--kb-border-strong) !important;
+  box-shadow: var(--kb-shadow-glow) !important;
 }
 </style>

@@ -718,6 +718,19 @@ export async function addIssueComment(boardId, listId, cardId, text) {
   }
 }
 
+export async function getIssueActivity(boardId, listId, cardId) {
+  try {
+    const response = await get(
+      `/boards/${boardId}/lists/${listId}/cards/${cardId}/activity`
+    );
+    if (response.success) {
+      return response;
+    }
+  } catch (ex) {
+    message.error(ex.message);
+  }
+}
+
 export async function searchIssues(boardId, filters = {}) {
   try {
     const params = new URLSearchParams();

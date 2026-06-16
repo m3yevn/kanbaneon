@@ -82,7 +82,7 @@ export default {
       isLite: import.meta.env.VITE_LITE_VERSION === "ON",
       smallScreen: window.matchMedia("(max-width:456px)").matches,
       largeScreen: window.matchMedia("(min-width:456px)").matches,
-      showNewList: this.$route.matched?.[0]?.path === "/boards/:id",
+      showNewList: /^\/boards\/[^/]+/.test(this.$route.path),
       visible: false,
       visibleSave: false,
       visibleEditBoard: false,
@@ -188,7 +188,7 @@ export default {
       this.visible = false;
     },
     async handleCheckRoute() {
-      if (this.$route.matched?.[0]?.path === "/boards/:id") {
+      if (/^\/boards\/[^/]+/.test(this.$route.path)) {
         this.showNewList = true;
         this.$store.commit("setCurrentBoardID", this.$route?.params?.id);
         let result;
@@ -213,9 +213,47 @@ export default {
 </script>
 
 <style scoped>
-h3 {
-  padding-left: 8px;
-  margin: 0px;
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  background: var(--kb-surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--kb-border);
+  box-shadow: var(--kb-shadow);
+}
+
+.row-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-body {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  gap: 12px;
+}
+
+.header-breadcrumb {
+  padding: 8px 24px 12px;
+  border-top: 1px solid var(--kb-border);
+  background: rgba(6, 10, 18, 0.4);
+}
+
+.header-breadcrumb h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
 }
 
 .icon-btn-wrapper {
@@ -225,113 +263,43 @@ h3 {
 }
 
 .icon-btn {
-  border-radius: 50%;
+  border-radius: 10px;
   height: 40px;
   width: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--kb-border);
+  background: var(--kb-surface-2);
   cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .icon-btn:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  border-color: var(--kb-border-strong);
+  box-shadow: var(--kb-shadow-glow);
 }
 
 .title {
   display: inline;
-  font-size: 32px;
-  font-weight: bold;
-  color: #42b883;
-
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   cursor: pointer;
-  margin-top: 16px;
-  margin-left: 16px;
+  margin: 0;
+}
+
+.title .kb-brand,
+.title {
+  color: var(--kb-accent);
 }
 
 .subtitle {
-  color: #35495e;
-}
-
-.add-new-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 18px;
-  font-weight: 500;
-  height: 46px;
-  padding: 20px;
-}
-
-.btn-danger {
-  background: #ef180c;
-  color: white;
-}
-</style>
-
-<style>
-.container {
-  margin-top: 150px;
-}
-</style>
-
-<style scoped>
-.header {
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  z-index: 10;
-  background: transparent;
-}
-
-.header-body {
-  background: white;
-  padding: 20px;
-  border-radius: 1px solid whitesmoke;
-}
-
-.header-breadcrumb {
-  background: #42b883;
-  padding: 4px;
-}
-
-.row-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.icon-container {
-  display: flex;
-  align-items: center;
-}
-
-.ant-popover {
-  position: fixed;
-}
-
-.ant-card-body {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-}
-
-.ant-breadcrumb,
-.ant-breadcrumb a {
-  color: whitesmoke;
-  font-size: 20px;
-  transition: color 0.3s;
-}
-
-.ant-breadcrumb a:hover {
-  color: rgb(13, 68, 63);
-  font-size: 20px;
-  transition: color 0.3s;
+  color: var(--kb-violet);
 }
 
 .name {
-  color: grey;
+  color: var(--kb-muted);
+  font-size: 0.85rem;
 }
 </style>

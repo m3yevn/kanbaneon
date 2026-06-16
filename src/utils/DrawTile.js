@@ -1,13 +1,14 @@
 import Konva from "konva";
 import { __dnd, __konva } from "./DrawCanvas";
 import { searchIntersection } from "./DrawListItem";
+import { CANVAS } from "../theme/canvasTheme.js";
 
 const isLite = import.meta.env.VITE_LITE_VERSION === "ON";
 
 export default function getTile({ largestChildren, height }) {
   const tile = new Konva.Rect({
     y: 10,
-    fill: "#FFFFFF",
+    fill: CANVAS.columnFill,
     height: largestChildren > 3 ? (largestChildren * 12) + (largestChildren * 180) + 50 : (largestChildren * 12) + largestChildren * 250,
     width: 295,
     cornerRadius: 8,

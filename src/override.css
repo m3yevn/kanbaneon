@@ -1,46 +1,50 @@
 .ant-popover {
-    position: fixed;
+  position: fixed;
 }
 
 .ant-popover .ant-popover-title {
-    margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .avatar {
-    background: #42b883;
-    border-radius: 50%;
-    height: 60px;
-    width: 60px;
-    border: solid 3px #42b883;
+  background: linear-gradient(135deg, var(--kb-accent), var(--kb-violet));
+  border-radius: 50%;
+  height: 44px;
+  width: 44px;
+  border: 2px solid var(--kb-border-strong);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    overflow: hidden;
+.avatar:hover {
+  box-shadow: 0 0 20px var(--kb-accent-soft);
+  transform: scale(1.04);
 }
 
 .mini-avatar {
-    background: #42b883;
-    border-radius: 50%;
-    height: 24px;
-    width: 24px;
-    border: solid 1px #42b883;
-    margin-left: 20px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    overflow: hidden;
+  background: linear-gradient(135deg, var(--kb-accent), var(--kb-violet));
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  border: 1px solid var(--kb-border-strong);
+  margin-left: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
 }
 
-.avatar img {
-    height: 100%;
-    width: auto;
-}
-
+.avatar img,
 .mini-avatar img {
-    height: 100%;
-    width: auto;
+  height: 100%;
+  width: auto;
+}
+
+.card .ant-card-body {
+  flex-direction: column;
 }

@@ -211,6 +211,15 @@ export const routes = [
     props: true,
   },
   {
+    path: "/boards/:id/issues/:issueKey",
+    component: defineAsyncComponent({
+      loader: () => import("./components/Boards/Board.vue"),
+    }),
+    name: "Board issue",
+    beforeEnter: sessionGuard,
+    props: true,
+  },
+  {
     path: "/boards/:id",
     component: defineAsyncComponent({
       loader: () => import("./components/Boards/Board.vue"),

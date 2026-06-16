@@ -1,5 +1,5 @@
 <template>
-  <div class="sprint-planning">
+  <div class="sprint-planning kb-panel">
     <div class="toolbar">
       <h2>Sprint planning</h2>
       <a-button type="primary" @click="sprintModal = true">New sprint</a-button>
@@ -172,8 +172,9 @@ defineExpose({ refresh });
 </script>
 
 <style scoped>
-.sprint-planning { padding: 16px; margin-top: 180px; max-width: 1100px; margin-left: auto; margin-right: auto; }
+.sprint-planning { margin: calc(var(--kb-header-h) + 56px) auto 32px; max-width: 1100px; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.issue-link { cursor: pointer; color: #1a237e; }
+.issue-link { cursor: pointer; color: var(--kb-accent); }
+.issue-link:hover { text-decoration: underline; }
 .mb-2 { margin-bottom: 8px; }
 </style>

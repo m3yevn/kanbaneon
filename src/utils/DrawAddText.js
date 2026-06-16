@@ -2,13 +2,16 @@ import Konva from "konva";
 import { __dnd, __konva } from "./DrawCanvas";
 import { searchIntersection } from "./DrawListItem";
 import { swapList } from "../helpers/ApiHelper";
+import { CANVAS } from "../theme/canvasTheme.js";
 
 const isLite = import.meta.env.VITE_LITE_VERSION === "ON";
 
 export default function getAddText() {
   const text = new Konva.Text({
     text: "",
-    fontSize: 20,
+    fontSize: 18,
+    fontStyle: "600",
+    fill: CANVAS.columnHeaderText,
     y: 24,
     width: 290,
     height: 200,

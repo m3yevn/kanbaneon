@@ -1,10 +1,11 @@
 import Konva from "konva";
+import { CANVAS } from "../theme/canvasTheme.js";
 
 export default function getAddButton() {
   const buttonGroup = new Konva.Group({ y: 35 });
   const circle = new Konva.Circle({
     radius: 20,
-    fill: "#40a9ff",
+    fill: CANVAS.addBtn,
     shadowOpacity: 0.5,
     shadowOffsetX: 1.5,
     shadowOffsetY: 1.5,

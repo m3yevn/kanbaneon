@@ -100,11 +100,14 @@ onMounted(async () => {
 
 <style scoped>
 .issue-search {
-  background: rgba(255,255,255,0.95);
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin: 0 24px 8px;
+  background: var(--kb-surface-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--kb-border);
+  padding: 14px 18px;
+  border-radius: var(--kb-radius-lg);
+  margin: 8px 24px 12px;
   max-width: 900px;
+  box-shadow: var(--kb-shadow);
 }
 .filters {
   display: flex;
@@ -115,7 +118,9 @@ onMounted(async () => {
 .filters .ant-select { min-width: 120px; }
 .results { margin-top: 12px; max-height: 200px; overflow-y: auto; }
 .result-row { cursor: pointer; gap: 8px; }
-.list-badge { color: #888; font-size: 12px; margin-left: auto; }
-.epic-badge { color: #9c27b0; font-size: 12px; }
-.empty { color: #888; margin-top: 8px; }
+.list-badge { color: var(--kb-muted); font-size: 12px; margin-left: auto; }
+.epic-badge { color: var(--kb-violet); font-size: 12px; }
+.empty { color: var(--kb-muted); margin-top: 8px; }
+.result-row { cursor: pointer; gap: 8px; border-radius: 8px; }
+.result-row:hover { background: var(--kb-accent-soft); }
 </style>

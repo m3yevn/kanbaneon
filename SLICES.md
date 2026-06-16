@@ -15,6 +15,8 @@ Vue 3 + Konva kanban frontend, evolving into a lightweight Jira clone.
 | **Issue drawer** | Right panel with edit + comments |
 | **Search & filters** | Query, type, priority, epic filters |
 | **Epic linking** | Link issues to epics, view epic children |
+| **Epic board** | Epics tab — rollup of epics + linked issues |
+| **Deep links** | `/boards/:id/issues/:issueKey` shareable URLs |
 | **Settings** | Organization shortcut, account, notifications |
 | **Docs page** | `/docs` — quick start, concepts, API link |
 
@@ -22,9 +24,7 @@ Vue 3 + Konva kanban frontend, evolving into a lightweight Jira clone.
 
 | # | Slice | Scope |
 |---|-------|-------|
-| 11 | **Epic board** | Dedicated epic rollup view |
 | 12 | **Board settings** | Edit columns, project key, permissions |
-| 13 | **Deep links** | `/boards/:id/issues/:issueKey` shareable URLs |
 
 ## Routes
 
