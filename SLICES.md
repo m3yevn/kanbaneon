@@ -19,6 +19,7 @@ Vue 3 + Konva kanban frontend, evolving into a lightweight Jira clone.
 | **Deep links** | `/boards/:id/issues/:issueKey` shareable URLs |
 | **Settings** | Organization shortcut, account, notifications |
 | **Docs page** | `/docs` — quick start, concepts, API link |
+| **Evolution Phase 1** | Lime light theme · `EVOLUTION.md` · canvas palette |
 
 ## Next slices
 
